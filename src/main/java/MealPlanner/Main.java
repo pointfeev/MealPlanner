@@ -12,7 +12,7 @@ public class Main {
         }
         System.out.println("Connected successfully, running a query...");
         try {
-            ArrayList<HashMap<String, Object>> results = DatabaseHelper.executeQuery("SELECT table_name FROM all_tables WHERE owner = '%545'");
+            ArrayList<HashMap<String, Object>> results = DatabaseHelper.executeQuery("SELECT table_name FROM all_tables WHERE owner LIKE '%545'");
             if (results == null) {
                 System.out.println("Query failed!");
                 return;
