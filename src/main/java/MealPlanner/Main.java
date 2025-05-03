@@ -2,6 +2,7 @@ package MealPlanner;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,10 +13,16 @@ public class Main {
         if (!DatabaseHelper.connect()) {
             return;
         }
+        System.out.println("Setting up the database...");
+        if (!DatabaseHelper.setup()) {
+            return;
+        }
         System.out.println("Connected successfully, running a query...");
         try {
-            ArrayList<HashMap<String, Object>> results = DatabaseHelper.executeQuery("SELECT table_name FROM all_tables WHERE owner LIKE '%545'");
-            if (results == null) {
+            ArrayList<HashMap<String, Object>> results;
+            try {
+                results = DatabaseHelper.executeQuery("SELECT table_name FROM all_tables WHERE owner = SYS_CONTEXT('USERENV', 'CURRENT_USER')");
+            } catch (SQLException exception) {
                 System.out.println("Query failed!");
                 return;
             }

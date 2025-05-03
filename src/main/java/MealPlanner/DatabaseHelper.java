@@ -1,5 +1,6 @@
 package MealPlanner;
 
+import MealPlanner.Models.*;
 import oracle.jdbc.OraclePreparedStatement;
 import oracle.jdbc.driver.OracleDriver;
 
@@ -57,6 +58,59 @@ public class DatabaseHelper {
     }
 
     /**
+     * Helper method for {@link #setup()}
+     */
+    private static boolean tableDoesNotExist(ArrayList<HashMap<String, Object>> tables, String tableName) {
+        return tables.stream().noneMatch(table -> table.get("TABLE_NAME").equals(tableName));
+    }
+
+    /**
+     * Checks if any of the model tables do not exist by querying the {@code all_tables} view, and if one does not exist,
+     * runs all the statements in the setup SQL script file {@code database.sql}.
+     */
+    public static boolean setup() {
+        ArrayList<HashMap<String, Object>> tables;
+        try {
+            tables = DatabaseHelper.executeQuery("SELECT table_name FROM all_tables WHERE owner = SYS_CONTEXT('USERENV', 'CURRENT_USER')");
+        } catch (SQLException exception) {
+            outputException("Failed to query the database during setup!\n\n" + exception.getMessage());
+            return false;
+        }
+
+        if (tableDoesNotExist(tables, FoodItem.TABLE)
+                || tableDoesNotExist(tables, FridgeItem.TABLE)
+                || tableDoesNotExist(tables, Meal.TABLE)
+                || tableDoesNotExist(tables, MealPlan.TABLE)
+                || tableDoesNotExist(tables, Recipe.TABLE)
+                || tableDoesNotExist(tables, RecipeIngredient.TABLE)
+                || tableDoesNotExist(tables, RecipeInstruction.TABLE)) {
+            try (InputStream stream = DatabaseHelper.class.getClassLoader().getResourceAsStream("database.sql")) {
+                if (stream == null) {
+                    outputException("Failed to read the database setup SQL file!");
+                    return false;
+                }
+
+                for (String sql : new String(stream.readAllBytes()).split("/")) {
+                    sql = sql.trim();
+                    try {
+                        DatabaseHelper.executeUpdate(sql);
+                    } catch (SQLException exception) {
+                        if (sql.startsWith("DROP") && exception.getErrorCode() == 942) { // table or view does not exist
+                            continue;
+                        }
+                        outputException("Encountered an error while setting up the database!\n\n" + sql + "\n\n" + exception.getMessage());
+                        return false;
+                    }
+                }
+            } catch (IOException exception) {
+                outputException(exception);
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
      * @param sql        SQL statement to prepare; see {@link Connection#prepareStatement(String)}
      * @param parameters Parameters to bind to the SQL statement (if any); see {@link OraclePreparedStatement#setObject(int, Object)}
      * @return The prepared statement with parameters (if any) bound to it; see {@link Connection#prepareStatement(String)} and {@link OraclePreparedStatement#setObject(int, Object)}
@@ -73,12 +127,13 @@ public class DatabaseHelper {
     /**
      * @param sql        SQL statement to prepare and execute; see {@link #prepareStatement(String, Object...)}
      * @param parameters Parameters to bind to the SQL statement (if any); see {@link #prepareStatement(String, Object...)}
-     * @return If the query was not successful, {@code null}; otherwise, an array of hash maps,
+     * @return An array of hash maps,
      * with each hash map corresponding to a row in the result set (see {@link OraclePreparedStatement#executeQuery()}),
      * each hash map key corresponding to a column name/label in that row (see {@link ResultSetMetaData#getColumnLabel(int)}),
      * and each hash map value corresponding to that column's value in that row (see {@link ResultSet#getObject(int)})
+     * @throws SQLException May be thrown by {@link PreparedStatement#executeQuery()} if the statement execution is unsuccessful
      */
-    public static ArrayList<HashMap<String, Object>> executeQuery(String sql, Object... parameters) {
+    public static ArrayList<HashMap<String, Object>> executeQuery(String sql, Object... parameters) throws SQLException {
         try (OraclePreparedStatement statement = prepareStatement(sql, parameters)) {
             ResultSet resultSet = statement.executeQuery();
 
@@ -96,24 +151,19 @@ public class DatabaseHelper {
                 results.add(result);
             }
             return results;
-        } catch (SQLException exception) {
-            outputException(exception);
         }
-        return null;
     }
 
     /**
      * @param sql        SQL statement to prepare and execute; see {@link #prepareStatement(String, Object...)}
      * @param parameters Parameters to bind to the SQL statement (if any); see {@link #prepareStatement(String, Object...)}
-     * @return If the query was not successful, {@code -1}; otherwise, the number of rows updated by the query (see {@link OraclePreparedStatement#executeUpdate()})
+     * @return The number of rows updated by the statement execution (see {@link OraclePreparedStatement#executeUpdate()})
+     * @throws SQLException May be thrown by {@link PreparedStatement#executeUpdate()} if the statement execution is unsuccessful
      */
-    public static int executeUpdate(String sql, Object... parameters) {
+    public static int executeUpdate(String sql, Object... parameters) throws SQLException {
         try (OraclePreparedStatement statement = prepareStatement(sql, parameters)) {
             return statement.executeUpdate();
-        } catch (SQLException exception) {
-            outputException(exception);
         }
-        return -1;
     }
 
     /**
@@ -124,7 +174,7 @@ public class DatabaseHelper {
     private static Properties getProperties() {
         try (InputStream stream = DatabaseHelper.class.getClassLoader().getResourceAsStream("database.properties")) {
             if (stream == null) {
-                outputException("Failed to obtain database properties! Make sure to follow the instructions in the README.");
+                outputException("Failed to read the database properties file!\n\nMake sure to follow the instructions in the README!");
                 return null;
             }
 
