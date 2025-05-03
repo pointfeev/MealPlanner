@@ -14,7 +14,7 @@ import java.util.Properties;
 import static MealPlanner.Main.outputException;
 
 public class DatabaseHelper {
-    private final static int LOGIN_TIMEOUT = 3;
+    private final static int LOGIN_TIMEOUT_SECONDS = 3;
 
     private static Connection connection = null;
 
@@ -33,12 +33,12 @@ public class DatabaseHelper {
         try {
             DriverManager.registerDriver(new OracleDriver()); // optional, but just in case
 
-            DriverManager.setLoginTimeout(LOGIN_TIMEOUT);
+            DriverManager.setLoginTimeout(LOGIN_TIMEOUT_SECONDS);
             connection = DriverManager.getConnection(url, username, password);
 
             return true;
         } catch (SQLTimeoutException exception) {
-            outputException("Connection timed out after %d seconds!".formatted(LOGIN_TIMEOUT));
+            outputException("Connection timed out after %d seconds!".formatted(LOGIN_TIMEOUT_SECONDS));
         } catch (SQLException exception) {
             outputException(exception);
         }
@@ -73,7 +73,7 @@ public class DatabaseHelper {
         try {
             tables = DatabaseHelper.executeQuery("SELECT table_name FROM all_tables WHERE owner = SYS_CONTEXT('USERENV', 'CURRENT_USER')");
         } catch (SQLException exception) {
-            outputException("Failed to query the database during setup!\n\n" + exception.getMessage());
+            outputException("Failed to query the database during setup!\n\n%s".formatted(exception.getMessage()));
             return false;
         }
 
@@ -95,10 +95,7 @@ public class DatabaseHelper {
                     try {
                         DatabaseHelper.executeUpdate(sql);
                     } catch (SQLException exception) {
-                        if (sql.startsWith("DROP") && exception.getErrorCode() == 942) { // table or view does not exist
-                            continue;
-                        }
-                        outputException("Encountered an error while setting up the database!\n\n" + sql + "\n\n" + exception.getMessage());
+                        outputException("Encountered an error while setting up the database!\n\n%s\n\n%s".formatted(sql, exception.getMessage()));
                         return false;
                     }
                 }
