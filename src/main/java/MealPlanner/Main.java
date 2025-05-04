@@ -19,16 +19,16 @@ public class Main {
 
         // TODO: move and remove all of this once the UI is set up
         StringBuilder testString = new StringBuilder();
-        testString.append("Connecting to the database...\n");
-        if (!DatabaseHelper.connect()) {
-            return;
-        }
-        testString.append("Setting up the database...\n");
-        if (!DatabaseHelper.setup()) {
-            return;
-        }
-        testString.append("Connected successfully, running a query...\n");
         try {
+            testString.append("Connecting to the database...\n");
+            if (!DatabaseHelper.connect()) {
+                return;
+            }
+            testString.append("Setting up the database...\n");
+            if (!DatabaseHelper.setup()) {
+                return;
+            }
+            testString.append("Connected successfully, running a query...\n");
             ArrayList<HashMap<String, Object>> results;
             try {
                 results = DatabaseHelper.executeQuery("SELECT table_name FROM all_tables WHERE owner = SYS_CONTEXT('USERENV', 'CURRENT_USER')");
@@ -45,8 +45,9 @@ public class Main {
         } finally {
             DatabaseHelper.disconnect();
             testString.append("Disconnected from the database.\n");
+            displayDialog("Database Test", JOptionPane.INFORMATION_MESSAGE, testString.toString());
+            System.exit(0);
         }
-        displayDialog("Database Test", JOptionPane.INFORMATION_MESSAGE, testString.toString());
     }
 
     /**
