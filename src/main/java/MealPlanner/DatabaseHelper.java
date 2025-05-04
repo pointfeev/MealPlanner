@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Properties;
 
-import static MealPlanner.Main.*;
+import static MealPlanner.GUI.MainFrame.displayErrorDialog;
 
 public class DatabaseHelper {
     private final static int LOGIN_TIMEOUT_SECONDS = 3;
@@ -40,7 +40,7 @@ public class DatabaseHelper {
         } catch (SQLTimeoutException exception) {
             displayErrorDialog("Failed to connect to the database!\n\nConnection timed out after %d seconds!", LOGIN_TIMEOUT_SECONDS);
         } catch (SQLException exception) {
-            displayErrorDialog("Encountered an error while connecting to the database!\n\n%s", getStackTrace(exception));
+            displayErrorDialog("Encountered an error while connecting to the database!\n\n%s", exception);
         }
         return false;
     }
@@ -55,7 +55,7 @@ public class DatabaseHelper {
         try {
             connection.close();
         } catch (SQLException exception) {
-            displayErrorDialog("Encountered an error while disconnecting from the database!\n\n%s", getStackTrace(exception));
+            displayErrorDialog("Encountered an error while disconnecting from the database!\n\n%s", exception);
         }
         connection = null;
     }
@@ -103,7 +103,7 @@ public class DatabaseHelper {
                     }
                 }
             } catch (IOException exception) {
-                displayErrorDialog("Encountered an error while setting up the database!\n\n%s", getStackTrace(exception));
+                displayErrorDialog("Encountered an error while setting up the database!\n\n%s", exception);
                 return false;
             }
         }
@@ -182,7 +182,7 @@ public class DatabaseHelper {
             properties.load(stream);
             return properties;
         } catch (IOException exception) {
-            displayErrorDialog("Encountered an error while getting database properties!\n\n%s", getStackTrace(exception));
+            displayErrorDialog("Encountered an error while getting database properties!\n\n%s", exception);
         }
         return null;
     }
