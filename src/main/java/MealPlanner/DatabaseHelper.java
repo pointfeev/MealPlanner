@@ -49,6 +49,9 @@ public class DatabaseHelper {
      * Closes the JDBC connection to the database; see {@link Connection#close()}
      */
     public static void disconnect() {
+        if (connection == null) {
+            return;
+        }
         try {
             connection.close();
         } catch (SQLException exception) {
