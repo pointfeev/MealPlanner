@@ -1,5 +1,8 @@
 package MealPlanner;
 
+import MealPlanner.GUI.MainFrame;
+
+import javax.swing.*;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.sql.SQLException;
@@ -8,56 +11,75 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Main {
+    public static MainFrame mainFrame;
+
     public static void main(String[] args) {
-        System.out.println("Connecting to the database...");
+        mainFrame = new MainFrame();
+        mainFrame.setVisible(true);
+
+        // TODO: move and remove all of this once the UI is set up
+        StringBuilder testString = new StringBuilder();
+        testString.append("Connecting to the database...\n");
         if (!DatabaseHelper.connect()) {
             return;
         }
-        System.out.println("Setting up the database...");
+        testString.append("Setting up the database...\n");
         if (!DatabaseHelper.setup()) {
             return;
         }
-        System.out.println("Connected successfully, running a query...");
+        testString.append("Connected successfully, running a query...\n");
         try {
             ArrayList<HashMap<String, Object>> results;
             try {
                 results = DatabaseHelper.executeQuery("SELECT table_name FROM all_tables WHERE owner = SYS_CONTEXT('USERENV', 'CURRENT_USER')");
             } catch (SQLException exception) {
-                System.out.println("Query failed!");
+                testString.append("Query failed!\n");
                 return;
             }
             for (HashMap<String, Object> result : results) {
                 for (Map.Entry<String, Object> entry : result.entrySet()) {
-                    System.out.printf("%s: %s\n", entry.getKey(), entry.getValue());
+                    testString.append("%s: %s\n".formatted(entry.getKey(), entry.getValue()));
                 }
             }
-            System.out.println("Query successful!");
+            testString.append("Query successful!\n");
         } finally {
             DatabaseHelper.disconnect();
-            System.out.println("Disconnected from the database.");
+            testString.append("Disconnected from the database.\n");
         }
+        displayDialog("Database Test", JOptionPane.INFORMATION_MESSAGE, testString.toString());
     }
 
     /**
-     * Converts the output of {@link Exception#printStackTrace()} to a {@link String} and sends it to {@link #outputException(String)}
+     * Converts the output of {@link Exception#printStackTrace()} to a {@link String} and returns it
      *
-     * @param exception Exception to output the stack trace for
+     * @param exception Exception to get the stack trace of
+     * @return Exception stack trace
      */
-    public static void outputException(Exception exception) {
+    public static String getStackTrace(Exception exception) {
         StringWriter errors = new StringWriter();
         exception.printStackTrace(new PrintWriter(errors));
-        outputException(errors.toString());
+        return errors.toString();
     }
 
     /**
-     * TODO: For now, sends the {@code message} to {@code System.out.println}; later, this will display a dialog with the {@code message}
-     * <p>
-     * TODO: This method and {@link #outputException(Exception)} will probably be moved to the class that handles the UI once that is developed
+     * Displays a message dialog using the specified title, message type, and formatted message
      *
-     * @param message Message to output
+     * @param title      The title of the message dialog
+     * @param type       The type of the message (e.g., JOptionPane constants such as JOptionPane.INFORMATION_MESSAGE)
+     * @param message    The message to display, which can include format specifiers
+     * @param parameters Optional; parameters used to format the message
      */
-    public static void outputException(String message) {
-        System.out.println(message);
-        // JOptionPane.showMessageDialog(null, e);
+    public static void displayDialog(String title, int type, String message, Object... parameters) {
+        JOptionPane.showMessageDialog(mainFrame, message.formatted(parameters), title, type);
+    }
+
+    /**
+     * Displays an error dialog with the specified message and formatted parameters
+     *
+     * @param message    The error message to display, which can include format specifiers
+     * @param parameters Optional; parameters used to format the message.
+     */
+    public static void displayErrorDialog(String message, Object... parameters) {
+        JOptionPane.showMessageDialog(mainFrame, message.formatted(parameters), "ERROR", JOptionPane.ERROR_MESSAGE);
     }
 }

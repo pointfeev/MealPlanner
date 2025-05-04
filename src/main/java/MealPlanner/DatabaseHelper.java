@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Properties;
 
-import static MealPlanner.Main.outputException;
+import static MealPlanner.Main.*;
 
 public class DatabaseHelper {
     private final static int LOGIN_TIMEOUT_SECONDS = 3;
@@ -38,9 +38,9 @@ public class DatabaseHelper {
 
             return true;
         } catch (SQLTimeoutException exception) {
-            outputException("Connection timed out after %d seconds!".formatted(LOGIN_TIMEOUT_SECONDS));
+            displayErrorDialog("Failed to connect to the database!\n\nConnection timed out after %d seconds!", LOGIN_TIMEOUT_SECONDS);
         } catch (SQLException exception) {
-            outputException(exception);
+            displayErrorDialog("Encountered an error while connecting to the database!\n\n%s", getStackTrace(exception));
         }
         return false;
     }
@@ -52,7 +52,7 @@ public class DatabaseHelper {
         try {
             connection.close();
         } catch (SQLException exception) {
-            outputException(exception);
+            displayErrorDialog("Encountered an error while disconnecting from the database!\n\n%s", getStackTrace(exception));
         }
         connection = null;
     }
@@ -73,7 +73,7 @@ public class DatabaseHelper {
         try {
             tables = DatabaseHelper.executeQuery("SELECT table_name FROM all_tables WHERE owner = SYS_CONTEXT('USERENV', 'CURRENT_USER')");
         } catch (SQLException exception) {
-            outputException("Failed to query the database during setup!\n\n%s".formatted(exception.getMessage()));
+            displayErrorDialog("Failed to query the database during setup!\n\n%s", exception.getMessage());
             return false;
         }
 
@@ -86,7 +86,7 @@ public class DatabaseHelper {
                 || tableDoesNotExist(tables, RecipeInstruction.TABLE)) {
             try (InputStream stream = DatabaseHelper.class.getClassLoader().getResourceAsStream("database.sql")) {
                 if (stream == null) {
-                    outputException("Failed to read the database setup SQL file!");
+                    displayErrorDialog("Failed to read the database setup SQL file!");
                     return false;
                 }
 
@@ -95,12 +95,12 @@ public class DatabaseHelper {
                     try {
                         DatabaseHelper.executeUpdate(sql);
                     } catch (SQLException exception) {
-                        outputException("Encountered an error while setting up the database!\n\n%s\n\n%s".formatted(sql, exception.getMessage()));
+                        displayErrorDialog("Encountered an error while setting up the database!\n\n%s\n\n%s", sql, exception.getMessage());
                         return false;
                     }
                 }
             } catch (IOException exception) {
-                outputException(exception);
+                displayErrorDialog("Encountered an error while setting up the database!\n\n%s", getStackTrace(exception));
                 return false;
             }
         }
@@ -171,7 +171,7 @@ public class DatabaseHelper {
     private static Properties getProperties() {
         try (InputStream stream = DatabaseHelper.class.getClassLoader().getResourceAsStream("database.properties")) {
             if (stream == null) {
-                outputException("Failed to read the database properties file!\n\nMake sure to follow the instructions in the README!");
+                displayErrorDialog("Failed to read the database properties file!\n\nMake sure to follow the instructions in the README!");
                 return null;
             }
 
@@ -179,7 +179,7 @@ public class DatabaseHelper {
             properties.load(stream);
             return properties;
         } catch (IOException exception) {
-            outputException(exception);
+            displayErrorDialog("Encountered an error while getting database properties!\n\n%s", getStackTrace(exception));
         }
         return null;
     }
