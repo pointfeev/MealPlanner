@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 import static MealPlanner.GUI.MainFrame.displayErrorDialog;
 
-public class Model {
+public abstract class Model {
     private Class<? extends Model> modelClass;
     private String modelName;
     private String table;
