@@ -92,8 +92,6 @@ public class Model {
             return null;
         }
 
-        System.out.println("SELECT * FROM %s%s".formatted(table, whereBuilder.isEmpty() ? "" : " WHERE %s".formatted(whereBuilder)));
-
         ArrayList<T> results = new ArrayList<>();
         try (OraclePreparedStatement statement = DatabaseHelper.prepareStatement(
                 "SELECT * FROM %s%s".formatted(table, whereBuilder.isEmpty() ? "" : " WHERE %s".formatted(whereBuilder)),
