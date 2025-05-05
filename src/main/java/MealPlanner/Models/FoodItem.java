@@ -4,7 +4,7 @@ import MealPlanner.Models.Annotations.Ignore;
 import MealPlanner.Models.Annotations.PrimaryKey;
 
 public class FoodItem extends Model {
-    @Ignore public static final String TABLE = "FOOD_ITEM";
+    @Ignore public static final String TABLE = "food_item";
 
     @PrimaryKey public Number id;
     public String name;

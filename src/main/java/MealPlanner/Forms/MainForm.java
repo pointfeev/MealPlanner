@@ -105,7 +105,6 @@ public class MainForm extends JFrame {
         recipeSearchField.setMinimumSize(new Dimension(300, 30));
         recipeSearchField.setMaximumSize(new Dimension(300, 30));
         recipeSearchField.setColumns(10);
-        recipeSearchField.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         recipeSearchField.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         recipeSearchField.setOpaque(false);
         recipeSearchField.setMargin(new Insets(5, 5, 5, 5));
