@@ -11,7 +11,7 @@ import java.util.HashSet;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static MealPlanner.GUI.MainFrame.displayErrorDialog;
+import static MealPlanner.Main.displayErrorDialog;
 
 public class DatabaseHelper {
     private final static int LOGIN_TIMEOUT_SECONDS = 3;

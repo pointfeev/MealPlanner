@@ -12,4 +12,5 @@ repositories {
 
 dependencies {
     implementation("com.oracle.database.jdbc:ojdbc17:23.7.0.25.01")
+    implementation("com.formdev:flatlaf:3.6")
 }

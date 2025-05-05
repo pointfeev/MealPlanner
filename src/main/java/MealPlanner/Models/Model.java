@@ -11,7 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import static MealPlanner.GUI.MainFrame.displayErrorDialog;
+import static MealPlanner.Main.displayErrorDialog;
 
 public abstract class Model {
     private Class<? extends Model> modelClass;
