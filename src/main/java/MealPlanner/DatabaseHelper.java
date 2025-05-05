@@ -70,7 +70,7 @@ public class DatabaseHelper {
                 "SELECT table_name FROM all_tables WHERE owner = SYS_CONTEXT('USERENV', 'CURRENT_USER')")) {
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
-                    tables.add(resultSet.getString(0));
+                    tables.add(resultSet.getString(1));
                 }
             }
         } catch (SQLException exception) {
@@ -131,7 +131,12 @@ public class DatabaseHelper {
      * @throws SQLException May be thrown be either {@link Connection#prepareStatement(String)} or {@link OraclePreparedStatement#setObject(int, Object)}
      */
     public static OraclePreparedStatement prepareStatement(String sql, String[] columnNames, Object... parameters) throws SQLException {
-        OraclePreparedStatement statement = (OraclePreparedStatement) connection.prepareStatement(sql, columnNames);
+        OraclePreparedStatement statement;
+        if (columnNames == null || columnNames.length == 0) {
+            statement = (OraclePreparedStatement) connection.prepareStatement(sql);
+        } else {
+            statement = (OraclePreparedStatement) connection.prepareStatement(sql, columnNames);
+        }
         setParameters(statement, new AtomicInteger(1), parameters);
         return statement;
     }
