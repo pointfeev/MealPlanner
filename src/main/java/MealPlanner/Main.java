@@ -1,6 +1,7 @@
 package MealPlanner;
 
 import MealPlanner.GUI.MainFrame;
+import MealPlanner.Models.FoodItem;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -12,9 +13,23 @@ import static MealPlanner.GUI.MainFrame.displayInfoDialog;
 public class Main {
     public static void main(String[] args) {
         MainFrame.get();
+        // TODO: move and remove the rest of this function once the UI is set up
 
-        // TODO: move and remove all of this once the UI is set up
-        StringBuilder testString = new StringBuilder();
+        DatabaseHelper.connect();
+        DatabaseHelper.setup();
+        FoodItem foodItemTest = new FoodItem();
+        foodItemTest.name = "White Sandwich Bread";
+        foodItemTest.unit = "slice";
+        foodItemTest.insert();
+        displayInfoDialog("inserted %s", foodItemTest.id);
+        foodItemTest.food_group = "grains";
+        foodItemTest.update();
+        displayInfoDialog("updated %s", foodItemTest.id);
+        foodItemTest.delete();
+        displayInfoDialog("deleted %s", foodItemTest.id);
+        System.exit(0);
+
+        /*StringBuilder testString = new StringBuilder();
         try {
             testString.append("Connecting to the database...\n");
             if (!DatabaseHelper.connect()) {
@@ -43,6 +58,6 @@ public class Main {
             testString.append("Disconnected from the database.\n");
             displayInfoDialog(testString.toString());
             System.exit(0);
-        }
+        }*/
     }
 }
