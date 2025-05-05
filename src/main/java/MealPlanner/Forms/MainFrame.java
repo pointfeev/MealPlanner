@@ -12,12 +12,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import static MealPlanner.Main.*;
 
-public class MainForm extends JFrame {
+public class MainFrame extends JFrame {
     public JPanel contentPane;
     public PlaceholderTextField recipeSearchField;
     public JTabbedPane tabbedPane;
 
-    public MainForm() {
+    public MainFrame() {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         setTitle("Meal Planner");

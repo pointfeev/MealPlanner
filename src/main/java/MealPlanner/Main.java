@@ -1,6 +1,6 @@
 package MealPlanner;
 
-import MealPlanner.Forms.MainForm;
+import MealPlanner.Forms.MainFrame;
 import com.formdev.flatlaf.FlatDarkLaf;
 
 import javax.swing.*;
@@ -8,14 +8,14 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 public class Main {
-    public static MainForm mainForm;
+    public static MainFrame mainFrame;
     public static JDialog dialog;
     public static JOptionPane dialogPane;
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             FlatDarkLaf.setup();
-            mainForm = new MainForm();
+            mainFrame = new MainFrame();
         });
         // TODO: move and remove the rest of this function once everything's implemented
 
@@ -141,7 +141,7 @@ public class Main {
         }
 
         dialogPane = new JOptionPane(message.formatted(parameters), type, JOptionPane.DEFAULT_OPTION);
-        dialog = dialogPane.createDialog(mainForm, title);
+        dialog = dialogPane.createDialog(mainFrame, title);
         dialog.pack();
     }
 
