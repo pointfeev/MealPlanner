@@ -10,12 +10,12 @@ public class FoodItem extends Model {
     public String name;
     public String food_group;
     public String unit;
-    public int calories;
-    public int fat;
-    public int cholesterol;
-    public int sodium;
-    public int carbohydrates;
-    public int dietary_fiber;
-    public int sugars;
-    public int protein;
+    public Number calories;
+    public Number fat;
+    public Number cholesterol;
+    public Number sodium;
+    public Number carbohydrates;
+    public Number dietary_fiber;
+    public Number sugars;
+    public Number protein;
 }

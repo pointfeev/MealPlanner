@@ -8,7 +8,7 @@ import java.sql.Date;
 public class MealPlan extends Model {
     @Ignore public static final String TABLE = "MEAL_PLAN";
 
-    @PrimaryKey public int id;
+    @PrimaryKey public Number id;
     public String name;
     public Date week_start;
 }

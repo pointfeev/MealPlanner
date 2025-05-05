@@ -6,7 +6,7 @@ import MealPlanner.Models.Annotations.PrimaryKey;
 public class Recipe extends Model {
     @Ignore public static final String TABLE = "RECIPE";
 
-    @PrimaryKey public int id;
+    @PrimaryKey public Number id;
     public String name;
     public String category;
 }

@@ -6,6 +6,7 @@ import MealPlanner.Models.Annotations.PrimaryKey;
 import oracle.jdbc.OraclePreparedStatement;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -13,23 +14,32 @@ import java.util.ArrayList;
 import static MealPlanner.GUI.MainFrame.displayErrorDialog;
 
 public class Model {
-    private Class<? extends Model> model;
+    private Class<? extends Model> modelClass;
     private String modelName;
     private String table;
 
     /**
-     * @return Whether reflection data was successfully populated
+     * Populates reflection data required for the current instance, including the model class,
+     * model name, and associated database table name. Reflection is used to retrieve metadata
+     * about the model class and its fields dynamically at runtime.
+     * <p>
+     * In the case of reflection-related exceptions (e.g., if the `TABLE` field does not exist or
+     * is inaccessible), an error message will be displayed, and the method will return false.
+     *
+     * @return {@code true} if the reflection data was successfully gathered; {@code false} if
+     * an error occurred during the process.
      */
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private boolean populateReflectionData() {
         try {
-            if (model == null) {
-                model = getClass();
+            if (modelClass == null) {
+                modelClass = getClass();
             }
             if (modelName == null) {
-                modelName = model.getSimpleName();
+                modelName = modelClass.getSimpleName();
             }
             if (table == null) {
-                table = model.getDeclaredField("TABLE").get(this).toString();
+                table = modelClass.getDeclaredField("TABLE").get(this).toString();
             }
         } catch (NoSuchFieldException | IllegalAccessException exception) {
             displayErrorDialog("Encountered an error while gathering reflection data for %s!\n\n%s", modelName, exception);
@@ -39,9 +49,95 @@ public class Model {
     }
 
     /**
-     * Inserts the current object into the associated database table
+     * Selects and retrieves an array of objects from the associated database table based on the field values of the current instance.
+     * <p>
+     * The method constructs a "WHERE" clause dynamically by evaluating the non-null fields of the current instance.
+     * If no fields are non-null, all records in the table are returned.
+     * <p>
+     * The retrieved records are mapped to instances of the associated model class, with fields populated from the database.
      *
-     * @return {@code true} if the insertion was successful, otherwise {@code false}
+     * @param <T> The type of the model extending {@code Model}.
+     * @return An array of objects of type {@code T}, representing the retrieved records, or {@code null} if an error occurs.
+     */
+    @SuppressWarnings("unchecked")
+    public <T extends Model> T[] select() {
+        if (!populateReflectionData()) {
+            return null;
+        }
+
+        StringBuilder whereBuilder = new StringBuilder();
+        ArrayList<Object> whereValues = new ArrayList<>();
+
+        try {
+            for (Field field : modelClass.getFields()) {
+                if (field.getAnnotation(Ignore.class) != null) {
+                    continue;
+                }
+
+                Object value = field.get(this);
+                if (value != null) {
+                    if (!whereBuilder.isEmpty()) {
+                        whereBuilder.append(" AND ");
+                    }
+                    if (value instanceof String && (((String) value).contains("%") || ((String) value).contains("_"))) {
+                        whereBuilder.append("%s LIKE ?".formatted(field.getName()));
+                    } else {
+                        whereBuilder.append("%s = ?".formatted(field.getName()));
+                    }
+                    whereValues.add(value);
+                }
+            }
+        } catch (IllegalAccessException exception) {
+            displayErrorDialog("Encountered an error while gathering selection parameters for %s!\n\n%s", modelName, exception);
+            return null;
+        }
+
+        System.out.println("SELECT * FROM %s%s".formatted(table, whereBuilder.isEmpty() ? "" : " WHERE %s".formatted(whereBuilder)));
+
+        ArrayList<T> results = new ArrayList<>();
+        try (OraclePreparedStatement statement = DatabaseHelper.prepareStatement(
+                "SELECT * FROM %s%s".formatted(table, whereBuilder.isEmpty() ? "" : " WHERE %s".formatted(whereBuilder)),
+                whereValues.toArray())) {
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    try {
+                        T result = (T) modelClass.getDeclaredConstructor().newInstance();
+                        for (Field field : modelClass.getFields()) {
+                            if (field.getAnnotation(Ignore.class) != null) {
+                                continue;
+                            }
+
+                            field.set(result, resultSet.getObject(field.getName()));
+                        }
+                        results.add(result);
+                    } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
+                             InvocationTargetException exception) {
+                        displayErrorDialog("Encountered an error while parsing selection results for %s!\n\n%s", modelName, exception);
+                        return null;
+                    }
+                }
+            }
+        } catch (SQLException exception) {
+            displayErrorDialog("Encountered an error while performing a selection for %s!\n\n%s", modelName, exception);
+            return null;
+        }
+
+        T[] array = (T[]) java.lang.reflect.Array.newInstance(modelClass, results.size());
+        return results.toArray(array);
+    }
+
+    /**
+     * Inserts the current object into the associated database table
+     * <p>
+     * The method dynamically constructs an SQL INSERT statement by examining the fields
+     * of the current instance. Fields annotated with {@link Ignore} are excluded from
+     * the insertion, and fields annotated with {@link PrimaryKey} are auto-generated if
+     * their value is null. Reflection is used to gather field data, and generated keys
+     * returned from the database are assigned back to the object.
+     * <p>
+     * If any step in the process fails, an error message is displayed, and the method returns {@code false}
+     *
+     * @return {@code true} if the object was successfully inserted into the database, otherwise {@code false}
      */
     public boolean insert() {
         if (!populateReflectionData()) {
@@ -55,7 +151,7 @@ public class Model {
         ArrayList<Object> parameterValues = new ArrayList<>();
 
         try {
-            for (Field field : model.getFields()) {
+            for (Field field : modelClass.getFields()) {
                 if (field.getAnnotation(Ignore.class) != null) {
                     continue;
                 }
@@ -104,7 +200,7 @@ public class Model {
                 try {
                     for (int index = 0; index < returnColumns.size(); index++) {
                         String column = returnColumns.get(index);
-                        model.getField(column).set(this, generatedKeys.getObject(index + 1));
+                        modelClass.getField(column).set(this, generatedKeys.getObject(index + 1));
                     }
                 } catch (NoSuchFieldException | IllegalAccessException exception) {
                     displayErrorDialog("Encountered an error while parsing insertion generated keys for %s!\n\n%s", modelName, exception);
@@ -120,8 +216,15 @@ public class Model {
 
     /**
      * Updates the current object in the associated database table
+     * <p>
+     * The method dynamically constructs an SQL UPDATE statement using reflection to identify
+     * the fields and their values. Fields marked with the {@link Ignore} annotation are skipped,
+     * while fields annotated with {@link PrimaryKey} are used in the WHERE clause. Other fields
+     * are used in the SET clause.
+     * <p>
+     * If any step in the process fails, an error message will be displayed, and the method returns {@code false}
      *
-     * @return {@code true} if the update was successful, otherwise {@code false}
+     * @return {@code true} if the object was successfully updated in the database, otherwise {@code false}
      */
     public boolean update() {
         if (!populateReflectionData()) {
@@ -135,7 +238,7 @@ public class Model {
         ArrayList<Object> parameterKeysAndValuesList = new ArrayList<>();
 
         try {
-            for (Field field : model.getFields()) {
+            for (Field field : modelClass.getFields()) {
                 if (field.getAnnotation(Ignore.class) != null) {
                     continue;
                 }
@@ -186,8 +289,14 @@ public class Model {
 
     /**
      * Deletes the current object from the associated database table
+     * <p>
+     * The method dynamically builds an SQL DELETE statement using reflection to identify
+     * primary key fields of the current instance. Fields annotated with {@link PrimaryKey}
+     * are included in the WHERE clause of the deletion query.
+     * <p>
+     * If any step in the process fails, an error message will be displayed, and the method returns {@code false}
      *
-     * @return {@code true} if the deletion was successful, otherwise {@code false}
+     * @return {@code true} if the object was successfully deleted from the database, otherwise {@code false}
      */
     public boolean delete() {
         if (!populateReflectionData()) {
@@ -198,11 +307,7 @@ public class Model {
         ArrayList<Object> keyKeysAndValuesList = new ArrayList<>();
 
         try {
-            for (Field field : model.getFields()) {
-                if (field.getAnnotation(Ignore.class) != null) {
-                    continue;
-                }
-
+            for (Field field : modelClass.getFields()) {
                 if (field.getAnnotation(PrimaryKey.class) == null) {
                     continue;
                 }

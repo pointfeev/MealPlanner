@@ -13,16 +13,60 @@ public class Main {
         DatabaseHelper.connect();
         DatabaseHelper.setup();
 
+        // testing selection
+        FoodItem foodItemCriteria = new FoodItem();
+        FoodItem[] foodItems = foodItemCriteria.select();
+        StringBuilder foodItemBuilder = new StringBuilder();
+        for (FoodItem foodItem : foodItems) {
+            foodItemBuilder.append("ID: %s, Name: %s, Unit: %s, Group: %s\n".formatted(
+                    foodItem.id,
+                    foodItem.name,
+                    foodItem.unit,
+                    foodItem.food_group));
+        }
+        displayInfoDialog(foodItemBuilder.toString());
+
+        // testing WHERE selection
+        foodItemCriteria = new FoodItem();
+        foodItemCriteria.name = "White Sandwich Bread";
+        foodItems = foodItemCriteria.select();
+        foodItemBuilder = new StringBuilder();
+        for (FoodItem foodItem : foodItems) {
+            foodItemBuilder.append("ID: %s, Name: %s, Unit: %s, Group: %s\n".formatted(
+                    foodItem.id,
+                    foodItem.name,
+                    foodItem.unit,
+                    foodItem.food_group));
+        }
+        displayInfoDialog(foodItemBuilder.toString());
+
+        // testing WHERE LIKE selection
+        foodItemCriteria.name = null; // remove name from search
+        foodItemCriteria.unit = "%spoon";
+        foodItems = foodItemCriteria.select();
+        foodItemBuilder = new StringBuilder();
+        for (FoodItem foodItem : foodItems) {
+            foodItemBuilder.append("ID: %s, Name: %s, Unit: %s, Group: %s\n".formatted(
+                    foodItem.id,
+                    foodItem.name,
+                    foodItem.unit,
+                    foodItem.food_group));
+        }
+        displayInfoDialog(foodItemBuilder.toString());
+
+        // testing insert
         FoodItem foodItemTest = new FoodItem();
         foodItemTest.name = "White Sandwich Bread";
         foodItemTest.unit = "slice";
         foodItemTest.insert();
         displayInfoDialog("inserted %s", foodItemTest.id);
 
+        // testing update
         foodItemTest.food_group = "grains";
         foodItemTest.update();
         displayInfoDialog("updated %s", foodItemTest.id);
 
+        // testing delete
         foodItemTest.delete();
         displayInfoDialog("deleted %s", foodItemTest.id);
 
