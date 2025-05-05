@@ -2,6 +2,7 @@ package MealPlanner.Models;
 
 import MealPlanner.DatabaseHelper;
 import MealPlanner.Models.Annotations.Ignore;
+import MealPlanner.Models.Annotations.OrderBy;
 import MealPlanner.Models.Annotations.PrimaryKey;
 import oracle.jdbc.OraclePreparedStatement;
 
@@ -68,6 +69,8 @@ public abstract class Model {
         StringBuilder whereBuilder = new StringBuilder();
         ArrayList<Object> whereValues = new ArrayList<>();
 
+        StringBuilder orderByBuilder = new StringBuilder();
+
         try {
             for (Field field : modelClass.getFields()) {
                 if (field.getAnnotation(Ignore.class) != null) {
@@ -86,6 +89,19 @@ public abstract class Model {
                     }
                     whereValues.add(value);
                 }
+
+                OrderBy orderBy = field.getAnnotation(OrderBy.class);
+                if (orderBy != null) {
+                    if (!orderByBuilder.isEmpty()) {
+                        orderByBuilder.append(", ");
+                    }
+                    orderByBuilder.append(field.getName());
+
+                    String order = orderBy.value();
+                    if (order != null) {
+                        orderByBuilder.append(" ").append(order);
+                    }
+                }
             }
         } catch (IllegalAccessException exception) {
             displayErrorDialog("Encountered an error while gathering selection parameters for %s!\n\n%s", modelName, exception);
@@ -94,7 +110,9 @@ public abstract class Model {
 
         ArrayList<T> results = new ArrayList<>();
         try (OraclePreparedStatement statement = DatabaseHelper.prepareStatement(
-                "SELECT * FROM %s%s".formatted(table, whereBuilder.isEmpty() ? "" : " WHERE %s".formatted(whereBuilder)),
+                "SELECT * FROM %s%s%s".formatted(table,
+                        whereBuilder.isEmpty() ? "" : " WHERE %s".formatted(whereBuilder),
+                        orderByBuilder.isEmpty() ? "" : " ORDER BY %s".formatted(orderByBuilder)),
                 whereValues.toArray())) {
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
