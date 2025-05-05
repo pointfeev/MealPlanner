@@ -59,6 +59,7 @@ CREATE TABLE recipe_instruction
     instruction VARCHAR(255) NOT NULL,
     PRIMARY KEY (recipe_id, step)
 )/
+CREATE INDEX recipe_instruction_recipe_id_idx ON recipe_instruction (recipe_id)/
 
 BEGIN
     EXECUTE IMMEDIATE 'DROP TABLE food_item CASCADE CONSTRAINTS';
@@ -99,6 +100,7 @@ CREATE TABLE recipe_ingredient
     quantity INT NOT NULL,
     PRIMARY KEY (recipe_id, food_id)
 )/
+CREATE INDEX recipe_ingredient_recipe_id_idx ON recipe_ingredient (recipe_id)/
 
 BEGIN
     EXECUTE IMMEDIATE 'DROP TABLE fridge_item CASCADE CONSTRAINTS';
