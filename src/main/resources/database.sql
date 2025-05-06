@@ -50,6 +50,8 @@ CREATE TABLE meal
             ON DELETE CASCADE
 )
 /
+CREATE INDEX meal_plan_id_idx ON meal (plan_id)
+/
 
 BEGIN
     EXECUTE IMMEDIATE 'DROP TABLE recipe_instruction CASCADE CONSTRAINTS';
@@ -147,7 +149,7 @@ HAVING GREATEST(SUM(ingredient.quantity) - NVL(fridge_item.quantity, 0), 0) > 0
 /
 
 INSERT INTO meal_plan
-VALUES (DEFAULT, 'Week 15', DATE '2025-05-11')
+VALUES (DEFAULT, 'Finals Week', DATE '2025-05-11')
 /
 
 INSERT INTO recipe
@@ -245,4 +247,8 @@ VALUES (DEFAULT, 1, 2, 'breakfast', 1)
 /
 INSERT INTO meal
 VALUES (DEFAULT, 1, 2, 'dinner', 2)
+/
+
+INSERT INTO meal_plan
+VALUES (DEFAULT, 'Week After Finals', DATE '2025-05-18')
 /

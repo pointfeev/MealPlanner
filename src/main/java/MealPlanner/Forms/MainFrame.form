@@ -50,6 +50,7 @@
               </grid>
               <scrollpane id="18073" binding="recipesScrollPane">
                 <constraints border-constraint="Center"/>
+                <properties/>
                 <border type="none"/>
                 <children/>
               </scrollpane>
@@ -61,7 +62,50 @@
             </constraints>
             <properties/>
             <border type="none"/>
-            <children/>
+            <children>
+              <grid id="32cb1" layout-manager="BorderLayout" hgap="0" vgap="0">
+                <constraints border-constraint="North"/>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="b7dc5" class="MealPlanner.Forms.Components.PlaceholderTextField" binding="mealPlanSearchField" custom-create="true">
+                    <constraints border-constraint="Center"/>
+                    <properties/>
+                  </component>
+                  <grid id="3b0" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+                    <constraints border-constraint="East"/>
+                    <properties/>
+                    <border type="none"/>
+                    <children>
+                      <component id="36c0b" class="javax.swing.JCheckBox" binding="mealPlanShowPastCheckBox">
+                        <constraints/>
+                        <properties>
+                          <text value="Show Past"/>
+                        </properties>
+                      </component>
+                      <component id="d029a" class="javax.swing.JSeparator">
+                        <constraints/>
+                        <properties>
+                          <preferredSize width="10" height="0"/>
+                        </properties>
+                      </component>
+                      <component id="86c9f" class="javax.swing.JButton" binding="mealPlanNewButton">
+                        <constraints/>
+                        <properties>
+                          <text value="New Meal Plan"/>
+                        </properties>
+                      </component>
+                    </children>
+                  </grid>
+                </children>
+              </grid>
+              <scrollpane id="b980c" binding="mealPlansScrollPane">
+                <constraints border-constraint="Center"/>
+                <properties/>
+                <border type="none"/>
+                <children/>
+              </scrollpane>
+            </children>
           </grid>
           <grid id="7f373" layout-manager="BorderLayout" hgap="0" vgap="0">
             <constraints>

@@ -133,6 +133,10 @@ public class RecipePanel extends Panel {
             contentPane.add(new RecipeInstructionPanel(recipeInstruction).contentPane);
         }
 
+        JSeparator separator = new JSeparator();
+        separator.setMaximumSize(new Dimension(Integer.MAX_VALUE, 2));
+        contentPane.add(separator);
+
         updateSize(topPane);
         updateSize(contentPane);
     }

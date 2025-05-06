@@ -10,4 +10,19 @@ public class Meal extends Model {
     @NotNull @CheckNumber(min = 1, max = 7) public Number day;
     @NotNull @CheckString({"breakfast", "lunch", "dinner"}) public String type;
     @NotNull public Number recipe_id;
+
+    @Ignore private Recipe recipe;
+
+    public Recipe getRecipe() {
+        if (recipe == null) {
+            Recipe recipeCriteria = new Recipe();
+            recipeCriteria.id = recipe_id;
+            Recipe[] recipes = recipeCriteria.select();
+            if (recipes == null || recipes.length == 0) {
+                throw new RuntimeException("Meal does not have a recipe associated with it! Meal ID: %s, Recipe ID: %s".formatted(id, recipe_id));
+            }
+            recipe = recipes[0];
+        }
+        return recipe;
+    }
 }
