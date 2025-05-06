@@ -78,13 +78,13 @@ public class DatabaseHelper {
             return false;
         }
 
-        if (!tables.contains(FoodItem.TABLE)
-                || !tables.contains(FridgeItem.TABLE)
-                || !tables.contains(Meal.TABLE)
-                || !tables.contains(MealPlan.TABLE)
-                || !tables.contains(Recipe.TABLE)
-                || !tables.contains(RecipeIngredient.TABLE)
-                || !tables.contains(RecipeInstruction.TABLE)) {
+        if (!tables.contains(FoodItem.TABLE.toUpperCase())
+                || !tables.contains(FridgeItem.TABLE.toUpperCase())
+                || !tables.contains(Meal.TABLE.toUpperCase())
+                || !tables.contains(MealPlan.TABLE.toUpperCase())
+                || !tables.contains(Recipe.TABLE.toUpperCase())
+                || !tables.contains(RecipeIngredient.TABLE.toUpperCase())
+                || !tables.contains(RecipeInstruction.TABLE.toUpperCase())) {
             try (InputStream stream = DatabaseHelper.class.getClassLoader().getResourceAsStream("database.sql")) {
                 if (stream == null) {
                     displayErrorDialog("Failed to read the database setup SQL file!");
