@@ -70,6 +70,7 @@ public class Main {
         dialogPane = new JOptionPane(message.formatted(parameters), type, JOptionPane.DEFAULT_OPTION);
         dialog = dialogPane.createDialog(mainFrame, title);
         dialog.pack();
+        dialog.setLocationRelativeTo(mainFrame);
     }
 
     /**

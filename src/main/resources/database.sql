@@ -118,8 +118,7 @@ CREATE TABLE fridge_item
 )/
 
 CREATE OR REPLACE VIEW shopping_list_item AS
-SELECT food_item.name,
-       food_item.unit,
+SELECT food_item.id                                                         AS food_id,
        GREATEST(SUM(ingredient.quantity) - NVL(fridge_item.quantity, 0), 0) AS quantity
 FROM food_item
          LEFT JOIN recipe_ingredient ingredient ON food_item.id = ingredient.food_id
@@ -127,7 +126,7 @@ FROM food_item
          LEFT JOIN meal_plan ON meal.plan_id = meal_plan.id
          LEFT JOIN fridge_item ON food_item.id = fridge_item.food_id
 WHERE meal_plan.week_start >= CURRENT_DATE - 1
-GROUP BY food_item.id, food_item.name, food_item.unit, fridge_item.quantity
+GROUP BY food_item.id, fridge_item.quantity
 HAVING GREATEST(SUM(ingredient.quantity) - NVL(fridge_item.quantity, 0), 0) > 0/
 
 INSERT INTO meal_plan

@@ -1,5 +1,6 @@
 package MealPlanner.Forms;
 
+import MealPlanner.Models.FoodItem;
 import MealPlanner.Models.Recipe;
 import MealPlanner.Models.RecipeIngredient;
 import MealPlanner.Models.RecipeInstruction;
@@ -8,7 +9,10 @@ import javax.swing.*;
 import javax.swing.plaf.FontUIResource;
 import javax.swing.text.StyleContext;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Locale;
+
+import static MealPlanner.Models.FoodItem.formatMilligrams;
 
 public class RecipePanel extends Panel {
     public Recipe recipe;
@@ -31,7 +35,92 @@ public class RecipePanel extends Panel {
         categoryLabel.setText(recipe.category);
         nameLabel.setText(recipe.name);
         detailsButton.addActionListener(event -> {
-            // TODO
+            StringBuilder foodGroupsBuilder = new StringBuilder();
+            int calories = 0;
+            int fat = 0;
+            int cholesterol = 0;
+            int sodium = 0;
+            int carbohydrates = 0;
+            int dietary_fiber = 0;
+            int sugars = 0;
+            int protein = 0;
+
+            for (RecipeIngredient recipeIngredient : recipe.getIngredients()) {
+                FoodItem foodItem = recipeIngredient.getFoodItem();
+
+                if (foodItem.food_group != null) {
+                    if (!foodGroupsBuilder.isEmpty()) {
+                        foodGroupsBuilder.append(", ");
+                    }
+                    foodGroupsBuilder.append(foodItem.food_group);
+                }
+                if (foodItem.calories != null) {
+                    calories += foodItem.calories.intValue() * recipeIngredient.quantity.intValue();
+                }
+                if (foodItem.fat != null) {
+                    fat += foodItem.fat.intValue() * recipeIngredient.quantity.intValue();
+                }
+                if (foodItem.cholesterol != null) {
+                    cholesterol += foodItem.cholesterol.intValue() * recipeIngredient.quantity.intValue();
+                }
+                if (foodItem.sodium != null) {
+                    sodium += foodItem.sodium.intValue() * recipeIngredient.quantity.intValue();
+                }
+                if (foodItem.carbohydrates != null) {
+                    carbohydrates += foodItem.carbohydrates.intValue() * recipeIngredient.quantity.intValue();
+                }
+                if (foodItem.dietary_fiber != null) {
+                    dietary_fiber += foodItem.dietary_fiber.intValue() * recipeIngredient.quantity.intValue();
+                }
+                if (foodItem.sugars != null) {
+                    sugars += foodItem.sugars.intValue() * recipeIngredient.quantity.intValue();
+                }
+                if (foodItem.protein != null) {
+                    protein += foodItem.protein.intValue() * recipeIngredient.quantity.intValue();
+                }
+            }
+
+            ArrayList<String> keysList = new ArrayList<>();
+            ArrayList<String> valuesList = new ArrayList<>();
+
+            if (!foodGroupsBuilder.isEmpty()) {
+                keysList.add("Food Groups");
+                valuesList.add(foodGroupsBuilder.toString());
+            }
+            if (calories != 0) {
+                keysList.add("Calories");
+                valuesList.add(String.valueOf(calories));
+            }
+            if (fat != 0) {
+                keysList.add("Fat");
+                valuesList.add(formatMilligrams(fat));
+            }
+            if (cholesterol != 0) {
+                keysList.add("Cholesterol");
+                valuesList.add(formatMilligrams(cholesterol));
+            }
+            if (sodium != 0) {
+                keysList.add("Sodium");
+                valuesList.add(formatMilligrams(sodium));
+            }
+            if (carbohydrates != 0) {
+                keysList.add("Carbohydrates");
+                valuesList.add(formatMilligrams(carbohydrates));
+            }
+            if (dietary_fiber != 0) {
+                keysList.add("Dietary Fiber");
+                valuesList.add(formatMilligrams(dietary_fiber));
+            }
+            if (sugars != 0) {
+                keysList.add("Sugars");
+                valuesList.add(formatMilligrams(sugars));
+            }
+            if (protein != 0) {
+                keysList.add("Protein");
+                valuesList.add(formatMilligrams(protein));
+            }
+
+            new DetailsFrame(recipe.name, keysList.toArray(new String[0]), valuesList.toArray(new String[0]));
         });
         editButton.addActionListener(event -> {
             // TODO

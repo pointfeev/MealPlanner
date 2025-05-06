@@ -5,6 +5,8 @@ import MealPlanner.Models.Annotations.Ignore;
 import MealPlanner.Models.Annotations.NotNull;
 import MealPlanner.Models.Annotations.PrimaryKey;
 
+import java.text.DecimalFormat;
+
 public class FoodItem extends Model {
     @Ignore public static final String TABLE = "food_item";
 
@@ -20,4 +22,14 @@ public class FoodItem extends Model {
     public Number dietary_fiber;
     public Number sugars;
     public Number protein;
+
+    public static String formatMilligrams(int value) {
+        if (value >= 1000) {
+            DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
+            double grams = value / 1000.0;
+            String formattedGrams = decimalFormat.format(grams).replaceAll("\\.?0*$", "");
+            return String.format("%s %s", formattedGrams, grams == 1 ? "gram" : "grams");
+        }
+        return String.format("%d %s", value, value == 1 ? "milligram" : "milligrams");
+    }
 }

@@ -1,12 +1,16 @@
 package MealPlanner.Forms;
 
+import MealPlanner.Models.FoodItem;
 import MealPlanner.Models.ShoppingListItem;
 
 import javax.swing.*;
 import javax.swing.plaf.FontUIResource;
 import javax.swing.text.StyleContext;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Locale;
+
+import static MealPlanner.Models.FoodItem.formatMilligrams;
 
 public class ShoppingItemPanel extends Panel {
     public ShoppingListItem shoppingListItem;
@@ -19,9 +23,50 @@ public class ShoppingItemPanel extends Panel {
         $$$setupUI$$$();
 
         this.shoppingListItem = shoppingListItem;
-        label.setText("%s %s(s) of %s".formatted(shoppingListItem.quantity, shoppingListItem.unit, shoppingListItem.name));
+        FoodItem foodItem = shoppingListItem.getFoodItem();
+        label.setText("%s %s(s) of %s".formatted(shoppingListItem.quantity, foodItem.unit, foodItem.name));
         detailsButton.addActionListener(event -> {
-            // TODO
+            ArrayList<String> keysList = new ArrayList<>();
+            ArrayList<String> valuesList = new ArrayList<>();
+
+            if (foodItem.food_group != null) {
+                keysList.add("Food Group");
+                valuesList.add(foodItem.food_group);
+            }
+            if (foodItem.calories != null) {
+                keysList.add("Calories");
+                valuesList.add(String.valueOf(foodItem.calories.intValue() * shoppingListItem.quantity.intValue()));
+            }
+            if (foodItem.fat != null) {
+                keysList.add("Fat");
+                valuesList.add(formatMilligrams(foodItem.fat.intValue() * shoppingListItem.quantity.intValue()));
+            }
+            if (foodItem.cholesterol != null) {
+                keysList.add("Cholesterol");
+                valuesList.add(formatMilligrams(foodItem.cholesterol.intValue() * shoppingListItem.quantity.intValue()));
+            }
+            if (foodItem.sodium != null) {
+                keysList.add("Sodium");
+                valuesList.add(formatMilligrams(foodItem.sodium.intValue() * shoppingListItem.quantity.intValue()));
+            }
+            if (foodItem.carbohydrates != null) {
+                keysList.add("Carbohydrates");
+                valuesList.add(formatMilligrams(foodItem.carbohydrates.intValue() * shoppingListItem.quantity.intValue()));
+            }
+            if (foodItem.dietary_fiber != null) {
+                keysList.add("Dietary Fiber");
+                valuesList.add(formatMilligrams(foodItem.dietary_fiber.intValue() * shoppingListItem.quantity.intValue()));
+            }
+            if (foodItem.sugars != null) {
+                keysList.add("Sugars");
+                valuesList.add(formatMilligrams(foodItem.sugars.intValue() * shoppingListItem.quantity.intValue()));
+            }
+            if (foodItem.protein != null) {
+                keysList.add("Protein");
+                valuesList.add(formatMilligrams(foodItem.protein.intValue() * shoppingListItem.quantity.intValue()));
+            }
+
+            new DetailsFrame(label.getText(), keysList.toArray(new String[0]), valuesList.toArray(new String[0]));
         });
 
         updateSize(contentPane);

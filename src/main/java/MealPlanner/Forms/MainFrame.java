@@ -215,9 +215,10 @@ public class MainFrame extends JFrame {
 
             for (ShoppingItemPanel shoppingItemPanel : shoppingItemPanels) {
                 ShoppingListItem shoppingListItem = shoppingItemPanel.shoppingListItem;
+                FoodItem foodItem = shoppingListItem.getFoodItem();
 
                 boolean matches = false;
-                if (shoppingListItem.name.toLowerCase().contains(searchTerm)) {
+                if (foodItem.name.toLowerCase().contains(searchTerm)) {
                     matches = true;
                 }
                 shoppingItemPanel.contentPane.setVisible(matches);
