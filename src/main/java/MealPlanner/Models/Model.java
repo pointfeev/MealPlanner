@@ -6,6 +6,7 @@ import oracle.jdbc.OraclePreparedStatement;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -121,7 +122,14 @@ public abstract class Model {
                                 continue;
                             }
 
-                            field.set(result, resultSet.getObject(field.getName()));
+                            Object value;
+                            if (field.getType() == Date.class) {
+                                // JDBC tries to return Timestamp for the Date class, causing errors
+                                value = resultSet.getDate(field.getName());
+                            } else {
+                                value = resultSet.getObject(field.getName());
+                            }
+                            field.set(result, value);
                         }
                         results.add(result);
                     } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
