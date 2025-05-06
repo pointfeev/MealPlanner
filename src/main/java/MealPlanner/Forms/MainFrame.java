@@ -148,6 +148,10 @@ public class MainFrame extends JFrame {
             RecipePanel recipePanel = new RecipePanel(recipe);
             recipePanels[index] = recipePanel;
             recipesPanel.add(recipePanel.contentPane);
+
+            JSeparator separator = new JSeparator();
+            separator.setMaximumSize(new Dimension(Integer.MAX_VALUE, 2));
+            recipesPanel.add(separator);
         }
         recipeSearchField.setText("");
     }
