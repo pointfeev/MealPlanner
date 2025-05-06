@@ -35,9 +35,11 @@
                   </component>
                 </children>
               </grid>
-              <scrollpane id="18073">
+              <scrollpane id="18073" binding="recipesScrollPane">
                 <constraints border-constraint="Center"/>
-                <properties/>
+                <properties>
+                  <horizontalScrollBarPolicy value="30"/>
+                </properties>
                 <border type="none"/>
                 <children/>
               </scrollpane>
