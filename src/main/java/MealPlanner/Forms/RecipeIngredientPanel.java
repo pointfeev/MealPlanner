@@ -1,20 +1,29 @@
 package MealPlanner.Forms;
 
+import MealPlanner.Models.FoodItem;
+import MealPlanner.Models.RecipeIngredient;
+
 import javax.swing.*;
 import java.awt.*;
 
-public class RecipeIngredientPanel {
+public class RecipeIngredientPanel extends Panel {
+    public RecipeIngredient recipeIngredient;
+
     public JPanel contentPane;
-    public JLabel stepLabel;
     public JLabel label;
+    public JButton detailsButton;
 
-    public RecipeIngredientPanel() {
+    public RecipeIngredientPanel(RecipeIngredient recipeIngredient) {
         $$$setupUI$$$();
-    }
 
-    public void updateSize() {
-        Dimension preferredSize = contentPane.getPreferredSize();
-        contentPane.setMaximumSize(new Dimension(preferredSize.width, preferredSize.height));
+        this.recipeIngredient = recipeIngredient;
+        FoodItem foodItem = recipeIngredient.getFoodItem();
+        label.setText("%s %s(s) of %s".formatted(recipeIngredient.quantity, foodItem.unit, foodItem.name));
+        detailsButton.addActionListener(event -> {
+            // TODO
+        });
+
+        updateSize(contentPane);
     }
 
     /**
@@ -26,13 +35,25 @@ public class RecipeIngredientPanel {
      */
     private void $$$setupUI$$$() {
         contentPane = new JPanel();
-        contentPane.setLayout(new FlowLayout(FlowLayout.LEFT, 40, 5));
+        contentPane.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 5));
         contentPane.setAlignmentX(0.0f);
+        final JSeparator separator1 = new JSeparator();
+        separator1.setPreferredSize(new Dimension(40, 0));
+        contentPane.add(separator1);
         label = new JLabel();
         label.setHorizontalAlignment(0);
         label.setHorizontalTextPosition(0);
         label.setText("Label");
         contentPane.add(label);
+        final JSeparator separator2 = new JSeparator();
+        separator2.setPreferredSize(new Dimension(10, 0));
+        contentPane.add(separator2);
+        detailsButton = new JButton();
+        detailsButton.setText("Details");
+        contentPane.add(detailsButton);
+        final JSeparator separator3 = new JSeparator();
+        separator3.setPreferredSize(new Dimension(10, 0));
+        contentPane.add(separator3);
     }
 
     /**

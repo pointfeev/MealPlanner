@@ -33,6 +33,19 @@
                     <constraints border-constraint="Center"/>
                     <properties/>
                   </component>
+                  <grid id="d7b67" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+                    <constraints border-constraint="East"/>
+                    <properties/>
+                    <border type="none"/>
+                    <children>
+                      <component id="f77a4" class="javax.swing.JButton" binding="recipeNewButton">
+                        <constraints/>
+                        <properties>
+                          <text value="New Recipe"/>
+                        </properties>
+                      </component>
+                    </children>
+                  </grid>
                 </children>
               </grid>
               <scrollpane id="18073" binding="recipesScrollPane">

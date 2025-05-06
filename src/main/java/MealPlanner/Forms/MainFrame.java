@@ -2,10 +2,8 @@ package MealPlanner.Forms;
 
 import MealPlanner.DatabaseHelper;
 import MealPlanner.Forms.Components.PlaceholderTextField;
-import MealPlanner.Models.FoodItem;
 import MealPlanner.Models.Recipe;
 import MealPlanner.Models.RecipeIngredient;
-import MealPlanner.Models.RecipeInstruction;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,19 +13,25 @@ import static MealPlanner.Main.*;
 
 public class MainFrame extends JFrame {
     public JPanel contentPane;
-    public PlaceholderTextField recipeSearchField;
     public JTabbedPane tabbedPane;
+
+    public PlaceholderTextField recipeSearchField;
+    public JButton recipeNewButton;
     public JScrollPane recipesScrollPane;
     public JPanel recipesPanel;
+    private RecipePanel[] recipePanels;
 
     public MainFrame() {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         setTitle("Meal Planner");
-        setMinimumSize(new Dimension(400, 400));
+        setMinimumSize(new Dimension(400, 300));
+        setSize(new Dimension(800, 600));
         setLocationByPlatform(true);
 
         $$$setupUI$$$();
+
+        tabbedPane.setSelectedIndex(-1);
 
         setupRecipeTab();
         setupMealPlansTab();
@@ -39,7 +43,6 @@ public class MainFrame extends JFrame {
 
         initialize();
 
-        populateRecipeTab(); // initial tab
         tabbedPane.addChangeListener(e -> {
             switch (tabbedPane.getSelectedIndex()) {
                 case 0:
@@ -59,6 +62,7 @@ public class MainFrame extends JFrame {
                     break;
             }
         });
+        tabbedPane.setSelectedIndex(0);
     }
 
     public void initialize() {
@@ -92,7 +96,27 @@ public class MainFrame extends JFrame {
         recipesPanel.setAlignmentX(JPanel.LEFT_ALIGNMENT);
         recipesScrollPane.setViewportView(recipesPanel);
 
-        recipeSearchField.addActionListener(event -> {
+        recipeSearchField.addCaretListener(event -> {
+            for (RecipePanel recipePanel : recipePanels) {
+                boolean matches = false;
+                String searchTerm = recipeSearchField.getText().toLowerCase();
+                if (recipePanel.recipe.name.toLowerCase().contains(searchTerm)) {
+                    matches = true;
+                } else if (recipePanel.recipe.category.toLowerCase().contains(searchTerm)) {
+                    matches = true;
+                } else {
+                    for (RecipeIngredient recipeIngredient : recipePanel.recipe.getIngredients()) {
+                        if (recipeIngredient.getFoodItem().name.toLowerCase().contains(searchTerm)) {
+                            matches = true;
+                            break;
+                        }
+                    }
+                }
+                recipePanel.contentPane.setVisible(matches);
+            }
+        });
+
+        recipeNewButton.addActionListener(event -> {
             // TODO
         });
     }
@@ -105,45 +129,11 @@ public class MainFrame extends JFrame {
             return;
         }
 
-        for (Recipe recipe : recipes) {
-            RecipePanel recipePanel = new RecipePanel();
-            recipePanel.categoryLabel.setText(recipe.category);
-            recipePanel.nameLabel.setText(recipe.name);
-            recipePanel.editButton.addActionListener(event -> {
-                // TODO
-            });
-
-            RecipeIngredient recipeIngredientCriteria = new RecipeIngredient();
-            recipeIngredientCriteria.recipe_id = recipe.id;
-            RecipeIngredient[] recipeIngredients = recipeIngredientCriteria.select();
-            for (RecipeIngredient recipeIngredient : recipeIngredients) {
-                FoodItem foodItemCriteria = new FoodItem();
-                foodItemCriteria.id = recipeIngredient.food_id;
-                FoodItem[] foodItems = foodItemCriteria.select();
-                if (foodItems == null || foodItems.length == 0) {
-                    continue;
-                }
-                FoodItem foodItem = foodItems[0];
-
-                RecipeIngredientPanel recipeIngredientPanel = new RecipeIngredientPanel();
-                recipeIngredientPanel.label.setText("%s %s(s) of %s".formatted(recipeIngredient.quantity, foodItem.unit, foodItem.name));
-
-                recipeIngredientPanel.updateSize();
-                recipePanel.contentPane.add(recipeIngredientPanel.contentPane);
-            }
-
-            RecipeInstruction recipeInstructionCriteria = new RecipeInstruction();
-            recipeInstructionCriteria.recipe_id = recipe.id;
-            RecipeInstruction[] recipeInstructions = recipeInstructionCriteria.select();
-            for (RecipeInstruction recipeInstruction : recipeInstructions) {
-                RecipeInstructionPanel recipeInstructionPanel = new RecipeInstructionPanel();
-                recipeInstructionPanel.label.setText("%s. %s".formatted(recipeInstruction.step, recipeInstruction.instruction));
-
-                recipeInstructionPanel.updateSize();
-                recipePanel.contentPane.add(recipeInstructionPanel.contentPane);
-            }
-
-            recipePanel.updateSize();
+        recipePanels = new RecipePanel[recipes.length];
+        for (int index = 0; index < recipes.length; index++) {
+            Recipe recipe = recipes[index];
+            RecipePanel recipePanel = new RecipePanel(recipe);
+            recipePanels[index] = recipePanel;
             recipesPanel.add(recipePanel.contentPane);
         }
     }
@@ -215,18 +205,24 @@ public class MainFrame extends JFrame {
         panel2.setLayout(new BorderLayout(0, 0));
         panel1.add(panel2, BorderLayout.NORTH);
         panel2.add(recipeSearchField, BorderLayout.CENTER);
+        final JPanel panel3 = new JPanel();
+        panel3.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+        panel2.add(panel3, BorderLayout.EAST);
+        recipeNewButton = new JButton();
+        recipeNewButton.setText("New Recipe");
+        panel3.add(recipeNewButton);
         recipesScrollPane = new JScrollPane();
         recipesScrollPane.setHorizontalScrollBarPolicy(30);
         panel1.add(recipesScrollPane, BorderLayout.CENTER);
-        final JPanel panel3 = new JPanel();
-        panel3.setLayout(new BorderLayout(0, 0));
-        tabbedPane.addTab("Meal Plans", panel3);
         final JPanel panel4 = new JPanel();
-        panel4.setLayout(new GridBagLayout());
-        tabbedPane.addTab("Fridge", panel4);
+        panel4.setLayout(new BorderLayout(0, 0));
+        tabbedPane.addTab("Meal Plans", panel4);
         final JPanel panel5 = new JPanel();
         panel5.setLayout(new GridBagLayout());
-        tabbedPane.addTab("Shopping List", panel5);
+        tabbedPane.addTab("Fridge", panel5);
+        final JPanel panel6 = new JPanel();
+        panel6.setLayout(new GridBagLayout());
+        tabbedPane.addTab("Shopping List", panel6);
     }
 
     /**

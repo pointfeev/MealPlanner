@@ -1,19 +1,23 @@
 package MealPlanner.Forms;
 
+import MealPlanner.Models.RecipeInstruction;
+
 import javax.swing.*;
 import java.awt.*;
 
-public class RecipeInstructionPanel {
+public class RecipeInstructionPanel extends Panel {
+    public RecipeInstruction recipeInstruction;
+
     public JPanel contentPane;
     public JLabel label;
 
-    public RecipeInstructionPanel() {
+    public RecipeInstructionPanel(RecipeInstruction recipeInstruction) {
         $$$setupUI$$$();
-    }
 
-    public void updateSize() {
-        Dimension preferredSize = contentPane.getPreferredSize();
-        contentPane.setMaximumSize(new Dimension(preferredSize.width, preferredSize.height));
+        this.recipeInstruction = recipeInstruction;
+        label.setText("%s. %s".formatted(recipeInstruction.step, recipeInstruction.instruction));
+
+        updateSize(contentPane);
     }
 
     /**
@@ -25,13 +29,19 @@ public class RecipeInstructionPanel {
      */
     private void $$$setupUI$$$() {
         contentPane = new JPanel();
-        contentPane.setLayout(new FlowLayout(FlowLayout.LEFT, 20, 5));
+        contentPane.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 5));
         contentPane.setAlignmentX(0.0f);
+        final JSeparator separator1 = new JSeparator();
+        separator1.setPreferredSize(new Dimension(20, 0));
+        contentPane.add(separator1);
         label = new JLabel();
         label.setHorizontalAlignment(0);
         label.setHorizontalTextPosition(0);
         label.setText("Label");
         contentPane.add(label);
+        final JSeparator separator2 = new JSeparator();
+        separator2.setPreferredSize(new Dimension(10, 0));
+        contentPane.add(separator2);
     }
 
     /**

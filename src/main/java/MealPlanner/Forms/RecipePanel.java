@@ -1,32 +1,51 @@
 package MealPlanner.Forms;
 
+import MealPlanner.Models.Recipe;
+import MealPlanner.Models.RecipeIngredient;
+import MealPlanner.Models.RecipeInstruction;
+
 import javax.swing.*;
 import javax.swing.plaf.FontUIResource;
 import javax.swing.text.StyleContext;
 import java.awt.*;
 import java.util.Locale;
 
-public class RecipePanel {
+public class RecipePanel extends Panel {
+    public Recipe recipe;
+
     public JPanel contentPane;
     public JPanel topPane;
     public JLabel categoryLabel;
     public JLabel nameLabel;
     public JButton editButton;
+    public JButton detailsButton;
 
-    public RecipePanel() {
+    public RecipePanel(Recipe recipe) {
         $$$setupUI$$$();
 
         contentPane = new JPanel();
         contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
         contentPane.add(topPane);
-    }
 
-    public void updateSize() {
-        Dimension preferredSize = topPane.getPreferredSize();
-        topPane.setMaximumSize(new Dimension(preferredSize.width, preferredSize.height));
+        this.recipe = recipe;
+        categoryLabel.setText(recipe.category);
+        nameLabel.setText(recipe.name);
+        editButton.addActionListener(event -> {
+            // TODO
+        });
+        detailsButton.addActionListener(event -> {
+            // TODO
+        });
 
-        preferredSize = contentPane.getPreferredSize();
-        contentPane.setMaximumSize(new Dimension(preferredSize.width, preferredSize.height));
+        for (RecipeIngredient recipeIngredient : recipe.getIngredients()) {
+            contentPane.add(new RecipeIngredientPanel(recipeIngredient).contentPane);
+        }
+        for (RecipeInstruction recipeInstruction : recipe.getInstructions()) {
+            contentPane.add(new RecipeInstructionPanel(recipeInstruction).contentPane);
+        }
+
+        updateSize(topPane);
+        updateSize(contentPane);
     }
 
     /**
@@ -38,13 +57,19 @@ public class RecipePanel {
      */
     private void $$$setupUI$$$() {
         topPane = new JPanel();
-        topPane.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 5));
+        topPane.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 5));
         topPane.setAlignmentX(0.0f);
+        final JSeparator separator1 = new JSeparator();
+        separator1.setPreferredSize(new Dimension(10, 0));
+        topPane.add(separator1);
         categoryLabel = new JLabel();
         Font categoryLabelFont = this.$$$getFont$$$(null, Font.ITALIC, -1, categoryLabel.getFont());
         if (categoryLabelFont != null) categoryLabel.setFont(categoryLabelFont);
         categoryLabel.setText("Label");
         topPane.add(categoryLabel);
+        final JSeparator separator2 = new JSeparator();
+        separator2.setPreferredSize(new Dimension(20, 0));
+        topPane.add(separator2);
         nameLabel = new JLabel();
         Font nameLabelFont = this.$$$getFont$$$(null, Font.BOLD, -1, nameLabel.getFont());
         if (nameLabelFont != null) nameLabel.setFont(nameLabelFont);
@@ -52,9 +77,21 @@ public class RecipePanel {
         nameLabel.setHorizontalTextPosition(0);
         nameLabel.setText("Label");
         topPane.add(nameLabel);
+        final JSeparator separator3 = new JSeparator();
+        separator3.setPreferredSize(new Dimension(20, 0));
+        topPane.add(separator3);
+        detailsButton = new JButton();
+        detailsButton.setText("Details");
+        topPane.add(detailsButton);
+        final JSeparator separator4 = new JSeparator();
+        separator4.setPreferredSize(new Dimension(10, 0));
+        topPane.add(separator4);
         editButton = new JButton();
         editButton.setText("Edit");
         topPane.add(editButton);
+        final JSeparator separator5 = new JSeparator();
+        separator5.setPreferredSize(new Dimension(10, 0));
+        topPane.add(separator5);
     }
 
     /**

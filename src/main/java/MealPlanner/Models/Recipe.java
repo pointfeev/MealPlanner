@@ -9,4 +9,25 @@ public class Recipe extends Model {
     @PrimaryKey public Number id;
     public String name;
     public String category;
+
+    @Ignore private RecipeIngredient[] ingredients;
+    @Ignore private RecipeInstruction[] instructions;
+
+    public RecipeIngredient[] getIngredients() {
+        if (ingredients == null) {
+            RecipeIngredient recipeIngredientCriteria = new RecipeIngredient();
+            recipeIngredientCriteria.recipe_id = id;
+            ingredients = recipeIngredientCriteria.select();
+        }
+        return ingredients;
+    }
+
+    public RecipeInstruction[] getInstructions() {
+        if (instructions == null) {
+            RecipeInstruction recipeInstructionCriteria = new RecipeInstruction();
+            recipeInstructionCriteria.recipe_id = id;
+            instructions = recipeInstructionCriteria.select();
+        }
+        return instructions;
+    }
 }

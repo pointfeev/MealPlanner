@@ -145,7 +145,44 @@ VALUES (1, 1, 'Spread the peanut butter on one side of a slice of bread.')/
 INSERT INTO recipe_instruction
 VALUES (1, 2, 'Spread the grape jelly on one side of the other slice of bread.')/
 INSERT INTO recipe_instruction
-VALUES (1, 3, 'Put the two slices of bread together, with the sides containing peanut butter and grape jelly facing one another, to form a sandwich.')/
+VALUES (1, 3, 'Put the two slices of bread together to form a sandwich.')/
 
 INSERT INTO meal
 VALUES (DEFAULT, 1, 1, 'lunch', 1)/
+
+INSERT INTO recipe
+VALUES (DEFAULT, 'Cheeseburger', 'Main Dish')/
+
+INSERT INTO food_item
+VALUES (DEFAULT, 'Hamburger Bun', 'grains', 'roll', 128, 1700, NULL, 230, 23000, 100, 2900, 4500)/
+INSERT INTO recipe_ingredient
+VALUES (2, 4, 2)/
+
+INSERT INTO food_item
+VALUES (DEFAULT, 'Beef', 'protein', 'ounce', 308, 20000, 101, 103, NULL, NULL, NULL, 31000)/
+INSERT INTO recipe_ingredient
+VALUES (2, 5, 4)/
+
+INSERT INTO food_item
+VALUES (DEFAULT, 'Lettuce', 'vegetable', 'leaf', 16, 300, NULL, 7, 310, 2000, 1100, 1200)/
+INSERT INTO recipe_ingredient
+VALUES (2, 6, 2)/
+
+INSERT INTO food_item
+VALUES (DEFAULT, 'Cheese', 'dairy', 'slice', 113, 9300, 28, 183, 900, NULL, 100, 6400)/
+INSERT INTO recipe_ingredient
+VALUES (2, 7, 1)/
+
+INSERT INTO recipe_instruction
+VALUES (2, 1, 'Mold beef into shape of patty.')/
+INSERT INTO recipe_instruction
+VALUES (2, 2, 'Cook beef over oven for 25 minutes at 350 degrees.')/
+INSERT INTO recipe_instruction
+VALUES (2, 3, 'Put beef between two buns.')/
+INSERT INTO recipe_instruction
+VALUES (2, 4, 'Add cheese and lettuce on top.')/
+
+INSERT INTO meal
+VALUES (DEFAULT, 1, 2, 'breakfast', 1)/
+INSERT INTO meal
+VALUES (DEFAULT, 1, 2, 'dinner', 2)/
