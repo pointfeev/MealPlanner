@@ -50,18 +50,6 @@
           <text value="Label"/>
         </properties>
       </component>
-      <component id="dcda2" class="javax.swing.JSeparator">
-        <constraints/>
-        <properties>
-          <preferredSize width="10" height="0"/>
-        </properties>
-      </component>
-      <component id="32cfa" class="javax.swing.JButton" binding="editButton">
-        <constraints/>
-        <properties>
-          <text value="Edit"/>
-        </properties>
-      </component>
       <component id="37086" class="javax.swing.JSeparator">
         <constraints/>
         <properties>

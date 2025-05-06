@@ -1,5 +1,6 @@
 package MealPlanner.Forms;
 
+import MealPlanner.Main;
 import MealPlanner.Models.FoodItem;
 import MealPlanner.Models.Recipe;
 import MealPlanner.Models.RecipeIngredient;
@@ -123,7 +124,8 @@ public class RecipePanel extends Panel {
             new DetailsFrame(recipe.name, keysList.toArray(new String[0]), valuesList.toArray(new String[0]));
         });
         editButton.addActionListener(event -> {
-            // TODO
+            new RecipeUpdateFrame(recipe);
+            Main.mainFrame.populateRecipeTab();
         });
 
         for (RecipeIngredient recipeIngredient : recipe.getIngredients()) {

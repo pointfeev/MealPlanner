@@ -18,7 +18,6 @@ public class MealPlanPanel extends Panel {
     public JLabel weekLabel;
     public JLabel nameLabel;
     public JButton editButton;
-    public JButton newMealButton;
 
     public MealPlanPanel(MealPlan mealPlan) {
         $$$setupUI$$$();
@@ -32,9 +31,6 @@ public class MealPlanPanel extends Panel {
         weekLabel.setText("%s to %s".formatted(mealPlan.week_start, weekEnd));
         nameLabel.setText(mealPlan.name);
         editButton.addActionListener(event -> {
-            // TODO
-        });
-        newMealButton.addActionListener(event -> {
             // TODO
         });
 
@@ -80,7 +76,7 @@ public class MealPlanPanel extends Panel {
         nameLabel.setText("Label");
         topPane.add(nameLabel);
         final JSeparator separator3 = new JSeparator();
-        separator3.setPreferredSize(new Dimension(10, 0));
+        separator3.setPreferredSize(new Dimension(20, 0));
         topPane.add(separator3);
         editButton = new JButton();
         editButton.setText("Edit");
@@ -88,12 +84,6 @@ public class MealPlanPanel extends Panel {
         final JSeparator separator4 = new JSeparator();
         separator4.setPreferredSize(new Dimension(10, 0));
         topPane.add(separator4);
-        newMealButton = new JButton();
-        newMealButton.setText("New Meal");
-        topPane.add(newMealButton);
-        final JSeparator separator5 = new JSeparator();
-        separator5.setPreferredSize(new Dimension(10, 0));
-        topPane.add(separator5);
     }
 
     /**

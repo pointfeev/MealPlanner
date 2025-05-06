@@ -82,12 +82,11 @@ public class MainFrame extends JFrame {
         recipesScrollPane.getVerticalScrollBar().setUnitIncrement(16);
         recipesScrollPane.getHorizontalScrollBar().setUnitIncrement(16);
 
-        recipeSearchField.addCaretListener(event -> {
-            updateRecipePanelsVisibility();
-        });
+        recipeSearchField.addCaretListener(event -> updateRecipePanelsVisibility());
 
         recipeNewButton.addActionListener(event -> {
-            // TODO
+            new RecipeUpdateFrame(null);
+            populateRecipeTab();
         });
     }
 

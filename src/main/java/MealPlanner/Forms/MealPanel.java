@@ -20,7 +20,6 @@ public class MealPanel extends Panel {
     public JPanel topPane;
     public JLabel dayLabel;
     public JLabel nameLabel;
-    public JButton editButton;
     public JLabel typeLabel;
 
     public MealPanel(MealPlan mealPlan, Meal meal) {
@@ -39,9 +38,6 @@ public class MealPanel extends Panel {
         typeLabel.setText(typeCapitalized);
         Recipe recipe = meal.getRecipe();
         nameLabel.setText(recipe.name);
-        editButton.addActionListener(event -> {
-            // TODO
-        });
 
         updateSize(topPane);
         updateSize(contentPane);
@@ -85,14 +81,8 @@ public class MealPanel extends Panel {
         nameLabel.setText("Label");
         topPane.add(nameLabel);
         final JSeparator separator4 = new JSeparator();
-        separator4.setPreferredSize(new Dimension(10, 0));
+        separator4.setPreferredSize(new Dimension(30, 0));
         topPane.add(separator4);
-        editButton = new JButton();
-        editButton.setText("Edit");
-        topPane.add(editButton);
-        final JSeparator separator5 = new JSeparator();
-        separator5.setPreferredSize(new Dimension(30, 0));
-        topPane.add(separator5);
     }
 
     /**
