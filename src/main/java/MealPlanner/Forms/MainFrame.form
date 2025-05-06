@@ -106,13 +106,31 @@
               </scrollpane>
             </children>
           </grid>
-          <grid id="c91d1" layout-manager="GridBagLayout">
+          <grid id="c91d1" layout-manager="BorderLayout" hgap="0" vgap="0">
             <constraints>
               <tabbedpane title="Shopping List"/>
             </constraints>
             <properties/>
             <border type="none"/>
-            <children/>
+            <children>
+              <grid id="91989" layout-manager="BorderLayout" hgap="0" vgap="0">
+                <constraints border-constraint="North"/>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="bc91e" class="MealPlanner.Forms.Components.PlaceholderTextField" binding="shoppingSearchField" custom-create="true">
+                    <constraints border-constraint="Center"/>
+                    <properties/>
+                  </component>
+                </children>
+              </grid>
+              <scrollpane id="ae460" binding="shoppingScrollPane">
+                <constraints border-constraint="Center"/>
+                <properties/>
+                <border type="none"/>
+                <children/>
+              </scrollpane>
+            </children>
           </grid>
         </children>
       </tabbedpane>

@@ -2,10 +2,7 @@ package MealPlanner.Forms;
 
 import MealPlanner.DatabaseHelper;
 import MealPlanner.Forms.Components.PlaceholderTextField;
-import MealPlanner.Models.FoodItem;
-import MealPlanner.Models.FridgeItem;
-import MealPlanner.Models.Recipe;
-import MealPlanner.Models.RecipeIngredient;
+import MealPlanner.Models.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,9 +21,13 @@ public class MainFrame extends JFrame {
     public JScrollPane fridgeScrollPane;
     public PlaceholderTextField fridgeSearchField;
     public JButton fridgeNewButton;
+    public PlaceholderTextField shoppingSearchField;
+    public JScrollPane shoppingScrollPane;
     public JPanel fridgeItemsPanel;
+    public JPanel shoppingItemsPanel;
     private RecipePanel[] recipePanels;
     private FridgeItemPanel[] fridgeItemPanels;
+    private ShoppingItemPanel[] shoppingItemPanels;
 
     public MainFrame() {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -204,11 +205,42 @@ public class MainFrame extends JFrame {
     }
 
     public void setupShoppingListTab() {
-        // TODO
+        shoppingItemsPanel = new JPanel();
+        shoppingItemsPanel.setLayout(new BoxLayout(shoppingItemsPanel, BoxLayout.Y_AXIS));
+        shoppingItemsPanel.setAlignmentX(JPanel.LEFT_ALIGNMENT);
+        shoppingScrollPane.setViewportView(shoppingItemsPanel);
+
+        shoppingSearchField.addCaretListener(event -> {
+            String searchTerm = shoppingSearchField.getText().toLowerCase();
+
+            for (ShoppingItemPanel shoppingItemPanel : shoppingItemPanels) {
+                ShoppingListItem shoppingListItem = shoppingItemPanel.shoppingListItem;
+
+                boolean matches = false;
+                if (shoppingListItem.name.toLowerCase().contains(searchTerm)) {
+                    matches = true;
+                }
+                shoppingItemPanel.contentPane.setVisible(matches);
+            }
+        });
     }
 
     public void populateShoppingListTab() {
-        // TODO
+        shoppingItemsPanel.removeAll();
+
+        ShoppingListItem[] shoppingListItems = new ShoppingListItem().select();
+        if (shoppingListItems == null) {
+            return;
+        }
+
+        shoppingItemPanels = new ShoppingItemPanel[shoppingListItems.length];
+        shoppingSearchField.setText("");
+        for (int index = 0; index < shoppingListItems.length; index++) {
+            ShoppingListItem shoppingListItem = shoppingListItems[index];
+            ShoppingItemPanel shoppingItemPanel = new ShoppingItemPanel(shoppingListItem);
+            shoppingItemPanels[index] = shoppingItemPanel;
+            this.shoppingItemsPanel.add(shoppingItemPanel.contentPane);
+        }
     }
 
     private PlaceholderTextField createSearchField(String placeholder) {
@@ -231,6 +263,7 @@ public class MainFrame extends JFrame {
     public void createUIComponents() {
         recipeSearchField = createSearchField("Search for a recipe...");
         fridgeSearchField = createSearchField("Search for an item...");
+        shoppingSearchField = createSearchField("Search for an item...");
     }
 
     /**
@@ -289,8 +322,14 @@ public class MainFrame extends JFrame {
         fridgeScrollPane = new JScrollPane();
         panel5.add(fridgeScrollPane, BorderLayout.CENTER);
         final JPanel panel8 = new JPanel();
-        panel8.setLayout(new GridBagLayout());
+        panel8.setLayout(new BorderLayout(0, 0));
         tabbedPane.addTab("Shopping List", panel8);
+        final JPanel panel9 = new JPanel();
+        panel9.setLayout(new BorderLayout(0, 0));
+        panel8.add(panel9, BorderLayout.NORTH);
+        panel9.add(shoppingSearchField, BorderLayout.CENTER);
+        shoppingScrollPane = new JScrollPane();
+        panel8.add(shoppingScrollPane, BorderLayout.CENTER);
     }
 
     /**

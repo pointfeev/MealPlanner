@@ -67,7 +67,7 @@ public class DatabaseHelper {
     public static boolean setup() {
         HashSet<String> tables = new HashSet<>();
         try (OraclePreparedStatement statement = prepareStatement(
-                "SELECT table_name FROM all_tables WHERE owner = SYS_CONTEXT('USERENV', 'CURRENT_USER')")) {
+                "SELECT object_name FROM user_objects WHERE object_type IN ('TABLE', 'VIEW')")) {
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
                     tables.add(resultSet.getString(1));
@@ -84,7 +84,8 @@ public class DatabaseHelper {
                 || !tables.contains(MealPlan.TABLE.toUpperCase())
                 || !tables.contains(Recipe.TABLE.toUpperCase())
                 || !tables.contains(RecipeIngredient.TABLE.toUpperCase())
-                || !tables.contains(RecipeInstruction.TABLE.toUpperCase())) {
+                || !tables.contains(RecipeInstruction.TABLE.toUpperCase())
+                || !tables.contains(ShoppingListItem.TABLE.toUpperCase())) {
             try (InputStream stream = DatabaseHelper.class.getClassLoader().getResourceAsStream("database.sql")) {
                 if (stream == null) {
                     displayErrorDialog("Failed to read the database setup SQL file!");
