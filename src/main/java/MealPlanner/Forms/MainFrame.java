@@ -143,13 +143,13 @@ public class MainFrame extends JFrame {
         }
 
         recipePanels = new RecipePanel[recipes.length];
-        recipeSearchField.setText("");
         for (int index = 0; index < recipes.length; index++) {
             Recipe recipe = recipes[index];
             RecipePanel recipePanel = new RecipePanel(recipe);
             recipePanels[index] = recipePanel;
             recipesPanel.add(recipePanel.contentPane);
         }
+        recipeSearchField.setText("");
     }
 
     public void setupMealPlansTab() {
@@ -195,13 +195,13 @@ public class MainFrame extends JFrame {
         }
 
         fridgeItemPanels = new FridgeItemPanel[fridgeItems.length];
-        fridgeSearchField.setText("");
         for (int index = 0; index < fridgeItems.length; index++) {
             FridgeItem fridgeItem = fridgeItems[index];
             FridgeItemPanel fridgeItemPanel = new FridgeItemPanel(fridgeItem);
             fridgeItemPanels[index] = fridgeItemPanel;
             fridgeItemsPanel.add(fridgeItemPanel.contentPane);
         }
+        fridgeSearchField.setText("");
     }
 
     public void setupShoppingListTab() {
@@ -235,7 +235,6 @@ public class MainFrame extends JFrame {
         }
 
         shoppingItemPanels = new ShoppingItemPanel[shoppingListItems.length];
-        shoppingSearchField.setText("");
         for (int index = 0; index < shoppingListItems.length; index++) {
             ShoppingListItem shoppingListItem = shoppingListItems[index];
             // TODO: segment this by weeks?
@@ -243,6 +242,7 @@ public class MainFrame extends JFrame {
             shoppingItemPanels[index] = shoppingItemPanel;
             this.shoppingItemsPanel.add(shoppingItemPanel.contentPane);
         }
+        shoppingSearchField.setText("");
     }
 
     private PlaceholderTextField createSearchField(String placeholder) {
