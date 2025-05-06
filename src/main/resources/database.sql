@@ -162,6 +162,8 @@ INSERT INTO food_item
 VALUES (DEFAULT, 'Beef', 'protein', 'ounce', 308, 20000, 101, 103, NULL, NULL, NULL, 31000)/
 INSERT INTO recipe_ingredient
 VALUES (2, 5, 4)/
+INSERT INTO fridge_item
+VALUES (DEFAULT, 5, 12)/
 
 INSERT INTO food_item
 VALUES (DEFAULT, 'Lettuce', 'vegetable', 'leaf', 16, 300, NULL, 7, 310, 2000, 1100, 1200)/

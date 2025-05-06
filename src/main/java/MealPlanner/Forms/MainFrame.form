@@ -66,13 +66,45 @@
             <border type="none"/>
             <children/>
           </grid>
-          <grid id="7f373" layout-manager="GridBagLayout">
+          <grid id="7f373" layout-manager="BorderLayout" hgap="0" vgap="0">
             <constraints>
               <tabbedpane title="Fridge"/>
             </constraints>
             <properties/>
             <border type="none"/>
-            <children/>
+            <children>
+              <grid id="bf0ef" layout-manager="BorderLayout" hgap="0" vgap="0">
+                <constraints border-constraint="North"/>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="4e782" class="MealPlanner.Forms.Components.PlaceholderTextField" binding="fridgeSearchField" custom-create="true">
+                    <constraints border-constraint="Center"/>
+                    <properties/>
+                  </component>
+                  <grid id="bfc8d" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+                    <constraints border-constraint="East"/>
+                    <properties/>
+                    <border type="none"/>
+                    <children>
+                      <component id="6db" class="javax.swing.JButton" binding="fridgeNewButton">
+                        <constraints/>
+                        <properties>
+                          <label value="New Fridge Item"/>
+                          <text value="New Fridge Item"/>
+                        </properties>
+                      </component>
+                    </children>
+                  </grid>
+                </children>
+              </grid>
+              <scrollpane id="67fd1" binding="fridgeScrollPane">
+                <constraints border-constraint="Center"/>
+                <properties/>
+                <border type="none"/>
+                <children/>
+              </scrollpane>
+            </children>
           </grid>
           <grid id="c91d1" layout-manager="GridBagLayout">
             <constraints>

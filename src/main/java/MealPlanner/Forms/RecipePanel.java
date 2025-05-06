@@ -30,10 +30,10 @@ public class RecipePanel extends Panel {
         this.recipe = recipe;
         categoryLabel.setText(recipe.category);
         nameLabel.setText(recipe.name);
-        editButton.addActionListener(event -> {
+        detailsButton.addActionListener(event -> {
             // TODO
         });
-        detailsButton.addActionListener(event -> {
+        editButton.addActionListener(event -> {
             // TODO
         });
 
