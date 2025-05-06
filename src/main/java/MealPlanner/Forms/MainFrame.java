@@ -1,14 +1,10 @@
 package MealPlanner.Forms;
 
-import MealPlanner.DatabaseHelper;
 import MealPlanner.Forms.Components.PlaceholderTextField;
 import MealPlanner.Models.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import static MealPlanner.Main.*;
 
 public class MainFrame extends JFrame {
     public JPanel contentPane;
@@ -49,8 +45,6 @@ public class MainFrame extends JFrame {
         setContentPane(contentPane);
         setVisible(true);
 
-        initialize();
-
         tabbedPane.addChangeListener(e -> {
             switch (tabbedPane.getSelectedIndex()) {
                 case 0:
@@ -71,31 +65,6 @@ public class MainFrame extends JFrame {
             }
         });
         tabbedPane.setSelectedIndex(0);
-    }
-
-    public void initialize() {
-        createOrUpdateDialog("Initializing", JOptionPane.INFORMATION_MESSAGE, new Object[]{"Cancel"}, "Initializing...");
-
-        AtomicBoolean success = new AtomicBoolean(false);
-        new Thread(() -> {
-            createOrUpdateDialog(null, null, null, "Connecting to the database...");
-            if (!DatabaseHelper.connect()) {
-                return;
-            }
-
-            createOrUpdateDialog(null, null, null, "Setting up the database...");
-            if (!DatabaseHelper.setup()) {
-                return;
-            }
-
-            success.set(true);
-            dialog.dispose();
-        }).start();
-
-        dialog.setVisible(true);
-        if (!success.get() && dialogPane.getValue() != null) {
-            System.exit(0);
-        }
     }
 
     public void setupRecipeTab() {

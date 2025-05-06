@@ -6,6 +6,7 @@ import com.formdev.flatlaf.FlatLightLaf;
 import javax.swing.*;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Main {
     public static MainFrame mainFrame;
@@ -15,8 +16,34 @@ public class Main {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             FlatLightLaf.setup();
+            initialize();
             mainFrame = new MainFrame();
         });
+    }
+
+    public static void initialize() {
+        createOrUpdateDialog("Meal Planner", JOptionPane.INFORMATION_MESSAGE, new Object[]{"Cancel"}, "Initializing...");
+
+        AtomicBoolean success = new AtomicBoolean(false);
+        new Thread(() -> {
+            createOrUpdateDialog(null, null, null, "Connecting to the database...");
+            if (!DatabaseHelper.connect()) {
+                return;
+            }
+
+            createOrUpdateDialog(null, null, null, "Setting up the database...");
+            if (!DatabaseHelper.setup()) {
+                return;
+            }
+
+            success.set(true);
+            dialog.dispose();
+        }).start();
+
+        dialog.setVisible(true);
+        if (!success.get() && dialogPane.getValue() != null) {
+            System.exit(0);
+        }
     }
 
     /**
@@ -67,11 +94,15 @@ public class Main {
             return;
         }
 
-        dialogPane = new JOptionPane(message.formatted(parameters), type, JOptionPane.DEFAULT_OPTION);
+        dialogPane = new JOptionPane(message.formatted(parameters), type, JOptionPane.DEFAULT_OPTION, null, options, null);
         dialog = dialogPane.createDialog(mainFrame, title);
         dialog.pack();
-        dialog.setLocationRelativeTo(mainFrame);
-        // TODO: figure out why the dialog isn't going into the middle of the main frame
+        if (mainFrame == null) {
+            dialog.setLocationByPlatform(true);
+        } else {
+            dialog.setLocationRelativeTo(mainFrame);
+            // TODO: figure out why the dialog isn't going into the middle of the main frame
+        }
     }
 
     /**
@@ -79,7 +110,7 @@ public class Main {
      * and optional format parameters to {@link #createOrUpdateDialog(String, Integer, Object[], String, Object...)}
      */
     public static void createInfoDialog(String message, Object... parameters) {
-        createOrUpdateDialog("Information", JOptionPane.INFORMATION_MESSAGE, new Object[]{"OK"}, message, parameters);
+        createOrUpdateDialog("Meal Planner - Information", JOptionPane.INFORMATION_MESSAGE, new Object[]{"OK"}, message, parameters);
     }
 
     /**
@@ -95,7 +126,7 @@ public class Main {
      * and optional format parameters to {@link #createOrUpdateDialog(String, Integer, Object[], String, Object...)}
      */
     public static void createErrorDialog(String message, Object... parameters) {
-        createOrUpdateDialog("ERROR", JOptionPane.ERROR_MESSAGE, new Object[]{"OK"}, message, parameters);
+        createOrUpdateDialog("Meal Planner - ERROR", JOptionPane.ERROR_MESSAGE, new Object[]{"OK"}, message, parameters);
     }
 
     /**

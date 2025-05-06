@@ -14,7 +14,7 @@ public class DetailsFrame extends JDialog {
     public JLabel label;
 
     public DetailsFrame(String header, String[] keys, String[] values) {
-        super(Main.mainFrame, "Details", true);
+        super(Main.mainFrame, "Meal Planner - Details", true);
         setResizable(false);
 
         $$$setupUI$$$();
