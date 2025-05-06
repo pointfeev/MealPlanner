@@ -230,7 +230,7 @@ public class MainFrame extends JFrame {
      */
     public void createUIComponents() {
         recipeSearchField = createSearchField("Search for a recipe...");
-        fridgeSearchField = createSearchField("Search for an item in the fridge...");
+        fridgeSearchField = createSearchField("Search for an item...");
     }
 
     /**
@@ -274,7 +274,7 @@ public class MainFrame extends JFrame {
         tabbedPane.addTab("Meal Plans", panel4);
         final JPanel panel5 = new JPanel();
         panel5.setLayout(new BorderLayout(0, 0));
-        tabbedPane.addTab("Fridge", panel5);
+        tabbedPane.addTab("Fridge/Pantry", panel5);
         final JPanel panel6 = new JPanel();
         panel6.setLayout(new BorderLayout(0, 0));
         panel5.add(panel6, BorderLayout.NORTH);
@@ -283,8 +283,8 @@ public class MainFrame extends JFrame {
         panel7.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
         panel6.add(panel7, BorderLayout.EAST);
         fridgeNewButton = new JButton();
-        fridgeNewButton.setLabel("New Fridge Item");
-        fridgeNewButton.setText("New Fridge Item");
+        fridgeNewButton.setLabel("New Item");
+        fridgeNewButton.setText("New Item");
         panel7.add(fridgeNewButton);
         fridgeScrollPane = new JScrollPane();
         panel5.add(fridgeScrollPane, BorderLayout.CENTER);
