@@ -1,9 +1,7 @@
 package MealPlanner.Models;
 
 import MealPlanner.DatabaseHelper;
-import MealPlanner.Models.Annotations.Ignore;
-import MealPlanner.Models.Annotations.OrderBy;
-import MealPlanner.Models.Annotations.PrimaryKey;
+import MealPlanner.Models.Annotations.*;
 import oracle.jdbc.OraclePreparedStatement;
 
 import java.lang.reflect.Field;
@@ -140,6 +138,79 @@ public abstract class Model {
 
         T[] array = (T[]) java.lang.reflect.Array.newInstance(modelClass, results.size());
         return results.toArray(array);
+    }
+
+    /**
+     * Validates the current instance by checking field values against the associated constraints
+     * provided through annotations such as {@link NotNull}, {@link CheckString}, and {@link CheckNumber}.
+     * <p>
+     * The validation process includes:
+     * <p>
+     * - Ensuring required fields (annotated with {@link NotNull}) are not null.
+     * <p>
+     * - Checking string values against allowed values (annotated with {@link CheckString}).
+     * <p>
+     * - Validating numeric values fall within a specified range (annotated with {@link CheckNumber}).
+     * <p>
+     * - Skipping fields annotated with {@link Ignore}.
+     * <p>
+     * If any validation fails, the method returns {@code false}.
+     * If an {@link IllegalAccessException} arises during reflection, an error dialog is displayed.
+     *
+     * @return {@code true} if all validations pass; otherwise, {@code false}.
+     */
+    public boolean validate() {
+        if (!populateReflectionData()) {
+            return false;
+        }
+
+        try {
+            for (Field field : modelClass.getFields()) {
+                if (field.getAnnotation(Ignore.class) != null) {
+                    continue;
+                }
+
+                Object value = field.get(this);
+                if (value == null) {
+                    if (field.getAnnotation(NotNull.class) != null) {
+                        return false;
+                    }
+                    continue;
+                }
+
+                CheckString checkString = field.getAnnotation(CheckString.class);
+                if (checkString != null) {
+                    String valueString = (String) value;
+
+                    String[] checkValues = checkString.value();
+                    boolean found = false;
+                    for (String checkValue : checkValues) {
+                        if (valueString.equals(checkValue)) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        return false;
+                    }
+                }
+
+                CheckNumber checkNumber = field.getAnnotation(CheckNumber.class);
+                if (checkNumber != null) {
+                    Number valueNumber = (Number) value;
+
+                    int checkMin = checkNumber.min();
+                    int checkMax = checkNumber.max();
+                    if (valueNumber.doubleValue() < checkMin || valueNumber.doubleValue() > checkMax) {
+                        return false;
+                    }
+                }
+            }
+        } catch (IllegalAccessException exception) {
+            displayErrorDialog("Encountered an error while performing validation for %s!\n\n%s", modelName, exception);
+        }
+
+        return true;
     }
 
     /**
