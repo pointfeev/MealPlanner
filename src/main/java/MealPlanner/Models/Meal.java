@@ -1,14 +1,13 @@
 package MealPlanner.Models;
 
-import MealPlanner.Models.Annotations.Ignore;
-import MealPlanner.Models.Annotations.PrimaryKey;
+import MealPlanner.Models.Annotations.*;
 
 public class Meal extends Model {
     @Ignore public static final String TABLE = "meal";
 
-    @PrimaryKey public Number id;
-    public Number plan_id;
-    public Number day;
-    public String type;
-    public Number recipe_id;
+    @PrimaryKey @NotNull public Number id;
+    @NotNull public Number plan_id;
+    @NotNull @CheckNumber(min = 1, max = 7) public Number day;
+    @NotNull @CheckString({"breakfast", "lunch", "dinner"}) public String type;
+    @NotNull public Number recipe_id;
 }
