@@ -50,9 +50,6 @@
               </grid>
               <scrollpane id="18073" binding="recipesScrollPane">
                 <constraints border-constraint="Center"/>
-                <properties>
-                  <horizontalScrollBarPolicy value="30"/>
-                </properties>
                 <border type="none"/>
                 <children/>
               </scrollpane>

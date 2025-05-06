@@ -1,7 +1,7 @@
 package MealPlanner;
 
 import MealPlanner.Forms.MainFrame;
-import com.formdev.flatlaf.FlatDarkLaf;
+import com.formdev.flatlaf.FlatLightLaf;
 
 import javax.swing.*;
 import java.io.PrintWriter;
@@ -14,7 +14,7 @@ public class Main {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            FlatDarkLaf.setup();
+            FlatLightLaf.setup();
             mainFrame = new MainFrame();
         });
     }
@@ -71,6 +71,7 @@ public class Main {
         dialog = dialogPane.createDialog(mainFrame, title);
         dialog.pack();
         dialog.setLocationRelativeTo(mainFrame);
+        // TODO: figure out why the dialog isn't going into the middle of the main frame
     }
 
     /**

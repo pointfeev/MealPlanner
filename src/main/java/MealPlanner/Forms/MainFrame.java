@@ -103,6 +103,8 @@ public class MainFrame extends JFrame {
         recipesPanel.setLayout(new BoxLayout(recipesPanel, BoxLayout.Y_AXIS));
         recipesPanel.setAlignmentX(JPanel.LEFT_ALIGNMENT);
         recipesScrollPane.setViewportView(recipesPanel);
+        recipesScrollPane.getVerticalScrollBar().setUnitIncrement(16);
+        recipesScrollPane.getHorizontalScrollBar().setUnitIncrement(16);
 
         recipeSearchField.addCaretListener(event -> {
             String searchTerm = recipeSearchField.getText().toLowerCase();
@@ -169,6 +171,8 @@ public class MainFrame extends JFrame {
         fridgeItemsPanel.setLayout(new BoxLayout(fridgeItemsPanel, BoxLayout.Y_AXIS));
         fridgeItemsPanel.setAlignmentX(JPanel.LEFT_ALIGNMENT);
         fridgeScrollPane.setViewportView(fridgeItemsPanel);
+        fridgeScrollPane.getVerticalScrollBar().setUnitIncrement(16);
+        fridgeScrollPane.getHorizontalScrollBar().setUnitIncrement(16);
 
         fridgeSearchField.addCaretListener(event -> {
             String searchTerm = fridgeSearchField.getText().toLowerCase();
@@ -213,6 +217,8 @@ public class MainFrame extends JFrame {
         shoppingItemsPanel.setLayout(new BoxLayout(shoppingItemsPanel, BoxLayout.Y_AXIS));
         shoppingItemsPanel.setAlignmentX(JPanel.LEFT_ALIGNMENT);
         shoppingScrollPane.setViewportView(shoppingItemsPanel);
+        shoppingScrollPane.getVerticalScrollBar().setUnitIncrement(16);
+        shoppingScrollPane.getHorizontalScrollBar().setUnitIncrement(16);
 
         shoppingSearchField.addCaretListener(event -> {
             String searchTerm = shoppingSearchField.getText().toLowerCase();
@@ -306,7 +312,6 @@ public class MainFrame extends JFrame {
         recipeNewButton.setText("New Recipe");
         panel3.add(recipeNewButton);
         recipesScrollPane = new JScrollPane();
-        recipesScrollPane.setHorizontalScrollBarPolicy(30);
         panel1.add(recipesScrollPane, BorderLayout.CENTER);
         final JPanel panel4 = new JPanel();
         panel4.setLayout(new BorderLayout(0, 0));
