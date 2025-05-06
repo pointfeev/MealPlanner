@@ -237,6 +237,7 @@ public class MainFrame extends JFrame {
         shoppingSearchField.setText("");
         for (int index = 0; index < shoppingListItems.length; index++) {
             ShoppingListItem shoppingListItem = shoppingListItems[index];
+            // TODO: segment this by weeks?
             ShoppingItemPanel shoppingItemPanel = new ShoppingItemPanel(shoppingListItem);
             shoppingItemPanels[index] = shoppingItemPanel;
             this.shoppingItemsPanel.add(shoppingItemPanel.contentPane);
