@@ -5,9 +5,6 @@ import MealPlanner.Models.RecipeIngredient;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
-
-import static MealPlanner.Models.FoodItem.formatMilligrams;
 
 public class RecipeIngredientPanel extends Panel {
     public RecipeIngredient recipeIngredient;
@@ -22,49 +19,7 @@ public class RecipeIngredientPanel extends Panel {
         this.recipeIngredient = recipeIngredient;
         FoodItem foodItem = recipeIngredient.getFoodItem();
         label.setText(foodItem.formatQuantity(recipeIngredient.quantity.intValue()));
-        detailsButton.addActionListener(event -> {
-            ArrayList<String> keysList = new ArrayList<>();
-            ArrayList<String> valuesList = new ArrayList<>();
-
-            if (foodItem.food_group != null) {
-                keysList.add("Food Group");
-                valuesList.add(foodItem.food_group);
-            }
-            if (foodItem.calories != null) {
-                keysList.add("Calories");
-                valuesList.add(String.valueOf(foodItem.calories.intValue() * recipeIngredient.quantity.intValue()));
-            }
-            if (foodItem.fat != null) {
-                keysList.add("Fat");
-                valuesList.add(formatMilligrams(foodItem.fat.intValue() * recipeIngredient.quantity.intValue()));
-            }
-            if (foodItem.cholesterol != null) {
-                keysList.add("Cholesterol");
-                valuesList.add(formatMilligrams(foodItem.cholesterol.intValue() * recipeIngredient.quantity.intValue()));
-            }
-            if (foodItem.sodium != null) {
-                keysList.add("Sodium");
-                valuesList.add(formatMilligrams(foodItem.sodium.intValue() * recipeIngredient.quantity.intValue()));
-            }
-            if (foodItem.carbohydrates != null) {
-                keysList.add("Carbohydrates");
-                valuesList.add(formatMilligrams(foodItem.carbohydrates.intValue() * recipeIngredient.quantity.intValue()));
-            }
-            if (foodItem.dietary_fiber != null) {
-                keysList.add("Dietary Fiber");
-                valuesList.add(formatMilligrams(foodItem.dietary_fiber.intValue() * recipeIngredient.quantity.intValue()));
-            }
-            if (foodItem.sugars != null) {
-                keysList.add("Sugars");
-                valuesList.add(formatMilligrams(foodItem.sugars.intValue() * recipeIngredient.quantity.intValue()));
-            }
-            if (foodItem.protein != null) {
-                keysList.add("Protein");
-                valuesList.add(formatMilligrams(foodItem.protein.intValue() * recipeIngredient.quantity.intValue()));
-            }
-
-            new DetailsFrame(label.getText(), keysList.toArray(new String[0]), valuesList.toArray(new String[0]));
-        });
+        detailsButton.addActionListener(event -> foodItem.getDetails(label.getText(), recipeIngredient.quantity));
 
         updateSize(contentPane);
     }

@@ -33,7 +33,7 @@ public class RecipeSelectFrame extends JDialog {
             label.setText("Select a recipe...");
 
             for (Recipe recipe : recipes) {
-                contentPane.add(new SelectPanel(recipe.name, event -> {
+                contentPane.add(new RecipeSelectPanel(recipe.name, event -> {
                     selectedRecipe = recipe;
                     dispose();
                 }).contentPane);

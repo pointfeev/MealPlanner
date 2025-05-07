@@ -2,7 +2,6 @@ package MealPlanner.Forms;
 
 import MealPlanner.Main;
 import MealPlanner.Models.FoodItem;
-import MealPlanner.Models.Recipe;
 
 import javax.swing.*;
 import javax.swing.plaf.FontUIResource;
@@ -19,7 +18,7 @@ public class FoodItemSelectFrame extends JDialog {
     public JLabel label;
 
     public FoodItemSelectFrame() {
-        super(Main.mainFrame, "Meal Planner - Select Food", true);
+        super(Main.mainFrame, "Meal Planner - Select Item", true);
         setResizable(false);
 
         $$$setupUI$$$();
@@ -31,7 +30,6 @@ public class FoodItemSelectFrame extends JDialog {
         foodPane = new JPanel();
         foodPane.setLayout(new BoxLayout(foodPane, BoxLayout.Y_AXIS));
         contentPane.add(foodPane);
-        populate();
 
         JPanel actionPanel = new JPanel();
         actionPanel.setAlignmentX(0.0f);
@@ -39,8 +37,11 @@ public class FoodItemSelectFrame extends JDialog {
         actionPanel.setLayout(actionPanelLayout);
         contentPane.add(actionPanel);
 
-        // TODO: button to create a new food item
-        //       make sure to run populate() to refresh after the dialog closes
+        ButtonPanel newItemButtonPanel = new ButtonPanel("New Item", event -> {
+            // TODO
+            populate();
+        });
+        actionPanel.add(newItemButtonPanel.contentPane);
 
         ButtonPanel cancelButtonPanel = new ButtonPanel("Cancel", event -> {
             selectedFoodItem = null;
@@ -50,7 +51,7 @@ public class FoodItemSelectFrame extends JDialog {
 
         setContentPane(contentPane);
 
-        pack();
+        populate();
         setLocationRelativeTo(Main.mainFrame);
 
         setVisible(true);
@@ -61,17 +62,22 @@ public class FoodItemSelectFrame extends JDialog {
 
         FoodItem[] foodItems = new FoodItem().select();
         if (foodItems.length == 0) {
-            label.setText("There is no food in the database.");
+            label.setText("There are no items in the database.");
         } else {
-            label.setText("Select food...");
+            label.setText("Select item...");
 
             for (FoodItem foodItem : foodItems) {
-                foodPane.add(new SelectPanel(foodItem.toString(), event -> {
+                foodPane.add(new FoodItemSelectPanel(foodItem.toString(), event -> {
                     selectedFoodItem = foodItem;
                     dispose();
+                }, event -> foodItem.getDetails(), event -> {
+                    // TODO: onEdit
+                    populate();
                 }).contentPane);
             }
         }
+
+        pack();
     }
 
     /**
