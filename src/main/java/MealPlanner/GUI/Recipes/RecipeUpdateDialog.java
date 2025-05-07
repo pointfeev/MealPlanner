@@ -217,8 +217,12 @@ public class RecipeUpdateDialog extends JDialog {
         InputPanel quantityInputPanel = new InputPanel("Quantity", ingredient.quantity == null ? "" : ingredient.quantity.toString(), text -> {
             Number parsedNumber;
             try {
-                parsedNumber = Integer.parseInt(text);
+                parsedNumber = Double.parseDouble(text);
             } catch (NumberFormatException exception) {
+                ingredientFinal.quantity = null;
+                return;
+            }
+            if (parsedNumber.doubleValue() == 0) {
                 ingredientFinal.quantity = null;
                 return;
             }

@@ -59,8 +59,12 @@ public class FridgeItemUpdateDialog extends JDialog {
         contentPane.add(new InputPanel("Quantity", this.fridgeItem.quantity == null ? "" : this.fridgeItem.quantity.toString(), text -> {
             Number parsedNumber;
             try {
-                parsedNumber = Integer.parseInt(text);
+                parsedNumber = Double.parseDouble(text);
             } catch (NumberFormatException exception) {
+                this.fridgeItem.quantity = null;
+                return;
+            }
+            if (parsedNumber.doubleValue() == 0) {
                 this.fridgeItem.quantity = null;
                 return;
             }
