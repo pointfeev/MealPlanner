@@ -204,6 +204,7 @@ public class RecipeUpdateDialog extends JDialog {
         FoodItem foodItem;
         if (ingredient == null) {
             FoodItemSelectDialog foodItemSelectDialog = new FoodItemSelectDialog();
+            // TODO: update/refresh the whole ingredients panel here to resolve issues with changed food items
             foodItem = foodItemSelectDialog.selectedFoodItem;
             if (foodItem == null) {
                 return;
@@ -228,6 +229,7 @@ public class RecipeUpdateDialog extends JDialog {
 
         ButtonPanel editButtonPanel = new ButtonPanel("Edit", event -> {
             FoodItemSelectDialog foodItemSelectDialog = new FoodItemSelectDialog();
+            // TODO: update/refresh the whole ingredients panel here to resolve issues with changed food items
             FoodItem selectedFoodItem = foodItemSelectDialog.selectedFoodItem;
             if (selectedFoodItem == null) {
                 return;

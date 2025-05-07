@@ -45,6 +45,8 @@ public class FridgeItemUpdateDialog extends JDialog {
 
         ButtonPanel editButtonPanel = new ButtonPanel("Edit", event -> {
             FoodItemSelectDialog foodItemSelectDialog = new FoodItemSelectDialog();
+            // TODO: create a panel for the fridge items, then
+            //       update/refresh the whole fridge items panel here to resolve issues with changed food items
             FoodItem selectedFoodItem = foodItemSelectDialog.selectedFoodItem;
             if (selectedFoodItem == null) {
                 return;
