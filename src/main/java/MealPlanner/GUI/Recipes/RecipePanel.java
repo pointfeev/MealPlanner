@@ -15,6 +15,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Locale;
 
+import static MealPlanner.Models.FoodItem.formatDecimal;
 import static MealPlanner.Models.FoodItem.formatMilligrams;
 
 public class RecipePanel extends Panel {
@@ -92,7 +93,7 @@ public class RecipePanel extends Panel {
             }
             if (calories != 0) {
                 keysList.add("Calories");
-                valuesList.add(String.valueOf(calories));
+                valuesList.add(formatDecimal(calories));
             }
             if (fat != 0) {
                 keysList.add("Fat");
