@@ -154,7 +154,8 @@ public class MainFrame extends JFrame {
         mealPlanShowPastCheckBox.addItemListener(event -> updateMealPlanPanelsVisibility());
 
         mealPlanNewButton.addActionListener(event -> {
-            // TODO
+            new MealPlanUpdateFrame(null);
+            populateRecipeTab();
         });
     }
 

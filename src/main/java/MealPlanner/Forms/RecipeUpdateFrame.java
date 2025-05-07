@@ -116,10 +116,6 @@ public class RecipeUpdateFrame extends JDialog {
 
         FoodItem foodItem = ingredient.getFoodItem();
 
-        InputPanel foodIdInputPanel = new InputPanel("ID", ingredient.food_id.toString(), 30);
-        foodIdInputPanel.contentPane.setVisible(false);
-        ingredientsPanel.add(foodIdInputPanel.contentPane);
-
         JPanel foodPanel = new JPanel();
         foodPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
         foodPanel.setAlignmentX(0.0f);
@@ -136,19 +132,18 @@ public class RecipeUpdateFrame extends JDialog {
         editButtonPanel.contentPane.remove(editButtonPanel.leftSeparator);
         foodPanel.add(editButtonPanel.contentPane);
 
-        InputPanel stepInputPanel = new InputPanel("Quantity", ingredient.quantity.toString(), 5);
+        InputPanel quantityInputPanel = new InputPanel("Quantity", ingredient.quantity.toString(), 5);
 
         ButtonPanel deleteButtonPanel = new ButtonPanel("Delete", event -> {
-            ingredientsPanel.remove(foodIdInputPanel.contentPane);
             ingredientsPanel.remove(foodPanel);
-            ingredientsPanel.remove(stepInputPanel.contentPane);
+            ingredientsPanel.remove(quantityInputPanel.contentPane);
 
             pack();
         });
         deleteButtonPanel.contentPane.remove(deleteButtonPanel.leftSeparator);
         foodPanel.add(deleteButtonPanel.contentPane);
 
-        ingredientsPanel.add(stepInputPanel.contentPane);
+        ingredientsPanel.add(quantityInputPanel.contentPane);
     }
 
     private void addInstruction(RecipeInstruction instruction) {

@@ -1,5 +1,6 @@
 package MealPlanner.Forms;
 
+import MealPlanner.Main;
 import MealPlanner.Models.Meal;
 import MealPlanner.Models.MealPlan;
 
@@ -31,7 +32,8 @@ public class MealPlanPanel extends Panel {
         weekLabel.setText("%s to %s".formatted(mealPlan.week_start, weekEnd));
         nameLabel.setText(mealPlan.name);
         editButton.addActionListener(event -> {
-            // TODO
+            new MealPlanUpdateFrame(mealPlan);
+            Main.mainFrame.populateMealPlansTab();
         });
 
         for (Meal meal : mealPlan.getMeals()) {
