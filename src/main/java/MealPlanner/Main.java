@@ -1,6 +1,6 @@
 package MealPlanner;
 
-import MealPlanner.Forms.MainFrame;
+import MealPlanner.GUI.MainFrame;
 import com.formdev.flatlaf.FlatLightLaf;
 
 import javax.swing.*;

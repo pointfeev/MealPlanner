@@ -1,6 +1,6 @@
 package MealPlanner.Models;
 
-import MealPlanner.Forms.DetailsDialog;
+import MealPlanner.GUI.Details.DetailsDialog;
 import MealPlanner.Models.Annotations.CheckString;
 import MealPlanner.Models.Annotations.Ignore;
 import MealPlanner.Models.Annotations.NotNull;
