@@ -44,11 +44,25 @@ public class FridgeItemUpdateDialog extends JDialog {
         foodPanel.add(foodNameInputPanel.contentPane);
 
         ButtonPanel editButtonPanel = new ButtonPanel("Edit", event -> {
-            FoodItemSelectDialog foodItemSelectDialog = new FoodItemSelectDialog();
+            FoodItemSelectDialog foodItemSelectDialog = new FoodItemSelectDialog(deletedFoodItem -> {
+                if (this.fridgeItem.food_id == null) {
+                    return;
+                }
+
+                if (this.fridgeItem.food_id.intValue() == deletedFoodItem.id.intValue()) {
+                    this.fridgeItem.id = null;
+                    this.fridgeItem.food_id = null;
+                    foodNameInputPanel.inputField.setText("");
+                }
+            });
 
             FoodItem selectedFoodItem = foodItemSelectDialog.selectedFoodItem;
             if (selectedFoodItem != null) {
                 this.fridgeItem.food_id = selectedFoodItem.id;
+            }
+
+            if (this.fridgeItem.food_id == null) {
+                return;
             }
 
             this.fridgeItem.clearCache();

@@ -120,6 +120,8 @@ public class RecipeUpdateDialog extends JDialog {
             if (this.recipe.id == null) {
                 success = this.recipe.insert();
             } else {
+                this.recipe.clearCache();
+
                 for (RecipeIngredient ingredient : this.recipe.getIngredients()) {
                     boolean shouldDelete = true;
                     for (RecipeIngredient ingredientUpdated : ingredients) {
@@ -203,6 +205,21 @@ public class RecipeUpdateDialog extends JDialog {
         setVisible(true);
     }
 
+    private void onFoodItemDeleted(FoodItem deletedFoodItem) {
+        for (InputPanel itemInputPanel : itemInputPanels) {
+            RecipeIngredient ingredient = (RecipeIngredient) itemInputPanel.contentPane.getClientProperty("ingredient");
+            if (ingredient == null || ingredient.food_id == null) {
+                continue;
+            }
+
+            if (ingredient.food_id.intValue() == deletedFoodItem.id.intValue()) {
+                ingredient.id = null;
+                ingredient.food_id = null;
+                itemInputPanel.inputField.setText("");
+            }
+        }
+    }
+
     private void updateIngredientItemInputs() {
         for (InputPanel itemInputPanel : itemInputPanels) {
             RecipeIngredient ingredient = (RecipeIngredient) itemInputPanel.contentPane.getClientProperty("ingredient");
@@ -211,14 +228,7 @@ public class RecipeUpdateDialog extends JDialog {
             }
 
             ingredient.clearCache();
-            FoodItem updatedFoodItem;
-            try {
-                updatedFoodItem = ingredient.getFoodItem();
-            } catch (RuntimeException exception) {
-                ingredient.food_id = null;
-                itemInputPanel.inputField.setText("");
-                return;
-            }
+            FoodItem updatedFoodItem = ingredient.getFoodItem();
             itemInputPanel.inputField.setText(updatedFoodItem.toString());
         }
     }
@@ -226,7 +236,7 @@ public class RecipeUpdateDialog extends JDialog {
     private void addIngredient(RecipeIngredient ingredient) {
         FoodItem foodItem;
         if (ingredient == null) {
-            FoodItemSelectDialog foodItemSelectDialog = new FoodItemSelectDialog();
+            FoodItemSelectDialog foodItemSelectDialog = new FoodItemSelectDialog(this::onFoodItemDeleted);
 
             updateIngredientItemInputs();
 
@@ -253,7 +263,7 @@ public class RecipeUpdateDialog extends JDialog {
         foodPanel.add(foodNameInputPanel.contentPane);
 
         ButtonPanel editButtonPanel = new ButtonPanel("Edit", event -> {
-            FoodItemSelectDialog foodItemSelectDialog = new FoodItemSelectDialog();
+            FoodItemSelectDialog foodItemSelectDialog = new FoodItemSelectDialog(this::onFoodItemDeleted);
 
             FoodItem selectedFoodItem = foodItemSelectDialog.selectedFoodItem;
             if (selectedFoodItem != null) {

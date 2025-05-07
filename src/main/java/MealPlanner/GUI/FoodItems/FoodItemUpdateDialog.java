@@ -10,6 +10,7 @@ import javax.swing.plaf.FontUIResource;
 import javax.swing.text.StyleContext;
 import java.awt.*;
 import java.util.Locale;
+import java.util.function.Consumer;
 
 public class FoodItemUpdateDialog extends JDialog {
     public FoodItem foodItem;
@@ -18,7 +19,7 @@ public class FoodItemUpdateDialog extends JDialog {
     public JPanel topPane;
     public JLabel label;
 
-    public FoodItemUpdateDialog(FoodItem foodItem) {
+    public FoodItemUpdateDialog(FoodItem foodItem, Consumer<FoodItem> onDeleteFoodItem) {
         super(Main.mainFrame, "Meal Planner - %s Item".formatted(foodItem == null ? "New" : "Edit"), true);
         setResizable(false);
 
@@ -181,6 +182,7 @@ public class FoodItemUpdateDialog extends JDialog {
                     return;
                 }
                 foodItem.delete();
+                onDeleteFoodItem.accept(foodItem);
 
                 dispose();
             });
@@ -196,6 +198,10 @@ public class FoodItemUpdateDialog extends JDialog {
         setLocationRelativeTo(Main.mainFrame);
 
         setVisible(true);
+    }
+
+    public FoodItemUpdateDialog(FoodItem foodItem) {
+        this(foodItem, null);
     }
 
     /**

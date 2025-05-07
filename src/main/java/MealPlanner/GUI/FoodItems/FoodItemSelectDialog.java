@@ -9,8 +9,11 @@ import javax.swing.plaf.FontUIResource;
 import javax.swing.text.StyleContext;
 import java.awt.*;
 import java.util.Locale;
+import java.util.function.Consumer;
 
 public class FoodItemSelectDialog extends JDialog {
+    private final Consumer<FoodItem> onDeleteFoodItem;
+
     public FoodItem selectedFoodItem;
 
     public JPanel contentPane;
@@ -18,11 +21,13 @@ public class FoodItemSelectDialog extends JDialog {
     public JPanel foodPane;
     public JLabel label;
 
-    public FoodItemSelectDialog() {
+    public FoodItemSelectDialog(Consumer<FoodItem> onDeleteFoodItem) {
         super(Main.mainFrame, "Meal Planner - Select Item", true);
         setResizable(false);
 
         $$$setupUI$$$();
+
+        this.onDeleteFoodItem = onDeleteFoodItem;
 
         contentPane = new JPanel();
         contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
@@ -40,7 +45,7 @@ public class FoodItemSelectDialog extends JDialog {
         contentPane.add(actionPanel);
 
         ButtonPanel newItemButtonPanel = new ButtonPanel("New Item", event -> {
-            new FoodItemUpdateDialog(null);
+            new FoodItemUpdateDialog(null, onDeleteFoodItem);
             populate();
         });
         actionPanel.add(newItemButtonPanel.contentPane);
@@ -59,7 +64,11 @@ public class FoodItemSelectDialog extends JDialog {
         setVisible(true);
     }
 
-    public void populate() {
+    public FoodItemSelectDialog() {
+        this(null);
+    }
+
+    private void populate() {
         foodPane.removeAll();
 
         FoodItem[] foodItems = new FoodItem().select();
@@ -73,7 +82,7 @@ public class FoodItemSelectDialog extends JDialog {
                     selectedFoodItem = foodItem;
                     dispose();
                 }, event -> {
-                    new FoodItemUpdateDialog(foodItem);
+                    new FoodItemUpdateDialog(foodItem, onDeleteFoodItem);
                     populate();
                 }).contentPane);
             }
