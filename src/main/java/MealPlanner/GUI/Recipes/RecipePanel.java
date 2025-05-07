@@ -39,14 +39,14 @@ public class RecipePanel extends Panel {
         nameLabel.setText(recipe.name);
         detailsButton.addActionListener(event -> {
             StringBuilder foodGroupsBuilder = new StringBuilder();
-            int calories = 0;
-            int fat = 0;
-            int cholesterol = 0;
-            int sodium = 0;
-            int carbohydrates = 0;
-            int dietary_fiber = 0;
-            int sugars = 0;
-            int protein = 0;
+            double calories = 0;
+            double fat = 0;
+            double cholesterol = 0;
+            double sodium = 0;
+            double carbohydrates = 0;
+            double dietary_fiber = 0;
+            double sugars = 0;
+            double protein = 0;
 
             for (RecipeIngredient recipeIngredient : recipe.getIngredients()) {
                 FoodItem foodItem = recipeIngredient.getFoodItem();
@@ -58,28 +58,28 @@ public class RecipePanel extends Panel {
                     foodGroupsBuilder.append(foodItem.food_group);
                 }
                 if (foodItem.calories != null) {
-                    calories += foodItem.calories.intValue() * recipeIngredient.quantity.intValue();
+                    calories += foodItem.calories.doubleValue() * recipeIngredient.quantity.doubleValue();
                 }
                 if (foodItem.fat != null) {
-                    fat += foodItem.fat.intValue() * recipeIngredient.quantity.intValue();
+                    fat += foodItem.fat.doubleValue() * recipeIngredient.quantity.doubleValue();
                 }
                 if (foodItem.cholesterol != null) {
-                    cholesterol += foodItem.cholesterol.intValue() * recipeIngredient.quantity.intValue();
+                    cholesterol += foodItem.cholesterol.doubleValue() * recipeIngredient.quantity.doubleValue();
                 }
                 if (foodItem.sodium != null) {
-                    sodium += foodItem.sodium.intValue() * recipeIngredient.quantity.intValue();
+                    sodium += foodItem.sodium.doubleValue() * recipeIngredient.quantity.doubleValue();
                 }
                 if (foodItem.carbohydrates != null) {
-                    carbohydrates += foodItem.carbohydrates.intValue() * recipeIngredient.quantity.intValue();
+                    carbohydrates += foodItem.carbohydrates.doubleValue() * recipeIngredient.quantity.doubleValue();
                 }
                 if (foodItem.dietary_fiber != null) {
-                    dietary_fiber += foodItem.dietary_fiber.intValue() * recipeIngredient.quantity.intValue();
+                    dietary_fiber += foodItem.dietary_fiber.doubleValue() * recipeIngredient.quantity.doubleValue();
                 }
                 if (foodItem.sugars != null) {
-                    sugars += foodItem.sugars.intValue() * recipeIngredient.quantity.intValue();
+                    sugars += foodItem.sugars.doubleValue() * recipeIngredient.quantity.doubleValue();
                 }
                 if (foodItem.protein != null) {
-                    protein += foodItem.protein.intValue() * recipeIngredient.quantity.intValue();
+                    protein += foodItem.protein.doubleValue() * recipeIngredient.quantity.doubleValue();
                 }
             }
 

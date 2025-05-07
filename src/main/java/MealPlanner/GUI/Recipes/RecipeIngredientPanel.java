@@ -19,7 +19,7 @@ public class RecipeIngredientPanel extends Panel {
 
         this.recipeIngredient = recipeIngredient;
         FoodItem foodItem = recipeIngredient.getFoodItem();
-        label.setText(foodItem.getFormattedQuantity(recipeIngredient.quantity.intValue()));
+        label.setText(foodItem.getFormattedQuantity(recipeIngredient.quantity));
         detailsButton.addActionListener(event -> foodItem.getDetails(label.getText(), recipeIngredient.quantity));
 
         updateSize(contentPane);

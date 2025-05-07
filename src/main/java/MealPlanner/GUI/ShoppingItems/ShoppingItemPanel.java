@@ -22,7 +22,7 @@ public class ShoppingItemPanel extends Panel {
 
         this.shoppingListItem = shoppingListItem;
         FoodItem foodItem = shoppingListItem.getFoodItem();
-        label.setText(foodItem.getFormattedQuantity(shoppingListItem.quantity.intValue()));
+        label.setText(foodItem.getFormattedQuantity(shoppingListItem.quantity));
         detailsButton.addActionListener(event -> foodItem.getDetails(label.getText(), shoppingListItem.quantity));
 
         updateSize(contentPane);

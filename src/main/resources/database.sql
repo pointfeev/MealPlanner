@@ -87,14 +87,14 @@ CREATE TABLE food_item
     food_group VARCHAR(9) DEFAULT NULL
         CHECK (food_group IN ('fruit', 'vegetable', 'grains', 'protein', 'dairy')),
     unit VARCHAR(255) NOT NULL,
-    calories NUMBER DEFAULT NULL,
-    fat NUMBER DEFAULT NULL, -- all nutrition facts are store in milligrams (1g = 1000mg)
-    cholesterol NUMBER DEFAULT NULL,
-    sodium NUMBER DEFAULT NULL,
-    carbohydrates NUMBER DEFAULT NULL,
-    dietary_fiber NUMBER DEFAULT NULL,
-    sugars NUMBER DEFAULT NULL,
-    protein NUMBER DEFAULT NULL
+    calories NUMBER(38, 3) DEFAULT NULL,
+    fat NUMBER(38, 3) DEFAULT NULL, -- all nutrition facts are store in milligrams (1g = 1000mg)
+    cholesterol NUMBER(38, 3) DEFAULT NULL,
+    sodium NUMBER(38, 3) DEFAULT NULL,
+    carbohydrates NUMBER(38, 3) DEFAULT NULL,
+    dietary_fiber NUMBER(38, 3) DEFAULT NULL,
+    sugars NUMBER(38, 3) DEFAULT NULL,
+    protein NUMBER(38, 3) DEFAULT NULL
 )
 /
 

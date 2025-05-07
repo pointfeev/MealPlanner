@@ -27,14 +27,20 @@ public class FoodItem extends Model {
     public Number sugars;
     public Number protein;
 
-    public static String formatMilligrams(int value) {
-        if (value >= 1000) {
-            double grams = value / 1000.0;
-            BigDecimal bigDecimal = new BigDecimal(Double.toString(grams));
-            String formattedGrams = bigDecimal.stripTrailingZeros().toPlainString();
-            return "%s %s".formatted(formattedGrams, grams == 1 ? "gram" : "grams");
+    public static String formatDecimal(Number value) {
+        BigDecimal bigDecimal = new BigDecimal(Double.toString(value.doubleValue()));
+        return bigDecimal.stripTrailingZeros().toPlainString();
+    }
+
+    public static String formatMilligrams(Number value) {
+        double milligrams = value.doubleValue();
+        if (milligrams >= 1000) {
+            double grams = milligrams / 1000.0;
+            String formattedGrams = formatDecimal(grams);
+            return "%s %s".formatted(formattedGrams, formattedGrams.equals("1") ? "gram" : "grams");
         }
-        return "%d %s".formatted(value, value == 1 ? "milligram" : "milligrams");
+        String formattedMilligrams = formatDecimal(milligrams);
+        return "%s %s".formatted(formattedMilligrams, formattedMilligrams.equals("1") ? "milligram" : "milligrams");
     }
 
     public void getDetails(String labelText, Number quantity) {
@@ -51,35 +57,35 @@ public class FoodItem extends Model {
         }
         if (calories != null) {
             keysList.add("Calories");
-            valuesList.add(String.valueOf(calories.intValue() * quantity.intValue()));
+            valuesList.add(formatDecimal(calories.doubleValue() * quantity.doubleValue()));
         }
         if (fat != null) {
             keysList.add("Fat");
-            valuesList.add(formatMilligrams(fat.intValue() * quantity.intValue()));
+            valuesList.add(formatMilligrams(fat.doubleValue() * quantity.doubleValue()));
         }
         if (cholesterol != null) {
             keysList.add("Cholesterol");
-            valuesList.add(formatMilligrams(cholesterol.intValue() * quantity.intValue()));
+            valuesList.add(formatMilligrams(cholesterol.doubleValue() * quantity.doubleValue()));
         }
         if (sodium != null) {
             keysList.add("Sodium");
-            valuesList.add(formatMilligrams(sodium.intValue() * quantity.intValue()));
+            valuesList.add(formatMilligrams(sodium.doubleValue() * quantity.doubleValue()));
         }
         if (carbohydrates != null) {
             keysList.add("Carbohydrates");
-            valuesList.add(formatMilligrams(carbohydrates.intValue() * quantity.intValue()));
+            valuesList.add(formatMilligrams(carbohydrates.doubleValue() * quantity.doubleValue()));
         }
         if (dietary_fiber != null) {
             keysList.add("Dietary Fiber");
-            valuesList.add(formatMilligrams(dietary_fiber.intValue() * quantity.intValue()));
+            valuesList.add(formatMilligrams(dietary_fiber.doubleValue() * quantity.doubleValue()));
         }
         if (sugars != null) {
             keysList.add("Sugars");
-            valuesList.add(formatMilligrams(sugars.intValue() * quantity.intValue()));
+            valuesList.add(formatMilligrams(sugars.doubleValue() * quantity.doubleValue()));
         }
         if (protein != null) {
             keysList.add("Protein");
-            valuesList.add(formatMilligrams(protein.intValue() * quantity.intValue()));
+            valuesList.add(formatMilligrams(protein.doubleValue() * quantity.doubleValue()));
         }
 
         new DetailsDialog(labelText, keysList.toArray(new String[0]), valuesList.toArray(new String[0]));
@@ -108,7 +114,7 @@ public class FoodItem extends Model {
         return capitalize(unit);
     }
 
-    public String getFormattedQuantity(int quantity) {
+    public String getFormattedQuantity(Number quantity) {
         return "%s %s(s) of %s".formatted(quantity, unit.toLowerCase(), getFormattedName());
     }
 
