@@ -33,27 +33,26 @@ public class FridgeItemUpdateDialog extends JDialog {
         label.setText("%s fridge/pantry item...".formatted(fridgeItem == null ? "Adding new" : "Editing existing"));
         this.fridgeItem = fridgeItem == null ? new FridgeItem() : fridgeItem;
 
-        FoodItem foodItem = fridgeItem != null ? this.fridgeItem.getFoodItem() : null;
 
         JPanel foodPanel = new JPanel();
         foodPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
         foodPanel.setAlignmentX(0.0f);
         contentPane.add(foodPanel);
 
+        FoodItem foodItem = fridgeItem != null ? this.fridgeItem.getFoodItem() : null;
         InputPanel foodNameInputPanel = new InputPanel("Item", foodItem == null ? "" : foodItem.toString(), 20, false);
         foodPanel.add(foodNameInputPanel.contentPane);
 
         ButtonPanel editButtonPanel = new ButtonPanel("Edit", event -> {
             FoodItemSelectDialog foodItemSelectDialog = new FoodItemSelectDialog();
-            // TODO: create a panel for the fridge items, then
-            //       update/refresh the whole fridge items panel here to resolve issues with changed food items
             FoodItem selectedFoodItem = foodItemSelectDialog.selectedFoodItem;
-            if (selectedFoodItem == null) {
-                return;
+            if (selectedFoodItem != null) {
+                this.fridgeItem.food_id = selectedFoodItem.id;
             }
 
-            this.fridgeItem.food_id = selectedFoodItem.id;
-            foodNameInputPanel.inputField.setText(selectedFoodItem.toString());
+            this.fridgeItem.clearCache();
+            FoodItem updatedFoodItem = this.fridgeItem.getFoodItem();
+            foodNameInputPanel.inputField.setText(updatedFoodItem == null ? "" : updatedFoodItem.toString());
         });
         editButtonPanel.contentPane.remove(editButtonPanel.leftSeparator);
         foodPanel.add(editButtonPanel.contentPane);
@@ -121,6 +120,10 @@ public class FridgeItemUpdateDialog extends JDialog {
         setLocationRelativeTo(Main.mainFrame);
 
         setVisible(true);
+    }
+
+    public void populateItem() {
+
     }
 
     /**
