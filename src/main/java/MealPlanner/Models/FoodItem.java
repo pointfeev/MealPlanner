@@ -10,7 +10,7 @@ import java.text.DecimalFormat;
 public class FoodItem extends Model {
     @Ignore public static final String TABLE = "food_item";
 
-    @PrimaryKey @NotNull public Number id;
+    @PrimaryKey public Number id;
     @NotNull public String name;
     @CheckString({"fruit", "vegetable", "grains", "protein", "dairy"}) public String food_group;
     @NotNull public String unit;

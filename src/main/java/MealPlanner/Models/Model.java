@@ -169,6 +169,7 @@ public abstract class Model {
      */
     public boolean validate() {
         if (!populateReflectionData()) {
+            displayErrorDialog("Failed to populate reflection data!");
             return false;
         }
 
@@ -181,6 +182,7 @@ public abstract class Model {
                 Object value = field.get(this);
                 if (value == null) {
                     if (field.getAnnotation(NotNull.class) != null) {
+                        displayErrorDialog("Please enter a valid value for field '%s'!".formatted(field.getName()));
                         return false;
                     }
                     continue;
@@ -199,6 +201,7 @@ public abstract class Model {
                         }
                     }
                     if (!found) {
+                        displayErrorDialog("Value for field '%s' must be one of the following: %s".formatted(field.getName(), String.join(", ", checkValues)));
                         return false;
                     }
                 }
@@ -210,14 +213,14 @@ public abstract class Model {
                     int checkMin = checkNumber.min();
                     int checkMax = checkNumber.max();
                     if (valueNumber.doubleValue() < checkMin || valueNumber.doubleValue() > checkMax) {
+                        displayErrorDialog("Value for field '%s' must be between %d and %d!".formatted(field.getName(), checkMin, checkMax));
                         return false;
                     }
                 }
             }
         } catch (IllegalAccessException exception) {
-            displayErrorDialog("Encountered an error while performing validation for %s!\n\n%s", modelName, exception);
+            displayErrorDialog("Encountered an error while performing validation for %s!\n\n%s".formatted(modelName, exception));
         }
-
         return true;
     }
 

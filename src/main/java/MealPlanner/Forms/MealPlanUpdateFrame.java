@@ -9,12 +9,12 @@ import javax.swing.*;
 import javax.swing.plaf.FontUIResource;
 import javax.swing.text.StyleContext;
 import java.awt.*;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Locale;
 
 public class MealPlanUpdateFrame extends JDialog {
     public MealPlan mealPlan;
-    public MealPlan mealPlanToSave;
 
     public JPanel contentPane;
     public JPanel topPane;
@@ -34,12 +34,20 @@ public class MealPlanUpdateFrame extends JDialog {
         contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
         contentPane.add(topPane);
 
-        this.mealPlan = mealPlan;
-        mealPlanToSave = mealPlan == null ? new MealPlan() : mealPlan;
         label.setText("%s weekly meal plan...".formatted(mealPlan == null ? "Adding new" : "Editing existing"));
+        this.mealPlan = mealPlan == null ? new MealPlan() : mealPlan;
 
-        contentPane.add(new InputPanel("Name", mealPlan == null ? "" : mealPlan.name, 30).contentPane);
-        contentPane.add(new InputPanel("Week Start", mealPlan == null ? "" : mealPlan.week_start.toString(), 30).contentPane);
+        contentPane.add(new InputPanel("Name", this.mealPlan.name == null ? "" : this.mealPlan.name, text -> this.mealPlan.name = text).contentPane);
+        contentPane.add(new InputPanel("Week Start", this.mealPlan.week_start == null ? "" : this.mealPlan.week_start.toString(), text -> {
+            Date parsedDate;
+            try {
+                parsedDate = Date.valueOf(text);
+            } catch (IllegalArgumentException exception) {
+                this.mealPlan.week_start = null;
+                return;
+            }
+            this.mealPlan.week_start = parsedDate;
+        }).contentPane);
 
         JSeparator mealsSeparator = new JSeparator();
         mealsSeparator.setMaximumSize(new Dimension(0, 5));
@@ -65,13 +73,54 @@ public class MealPlanUpdateFrame extends JDialog {
         contentPane.add(actionPanel);
 
         ButtonPanel saveButtonPanel = new ButtonPanel("Save", event -> {
-            // TODO: set values on mealPlanToSave from input boxes
-            //       may want to add listeners to input boxes instead for this
-            //       same for meals
+            if (!this.mealPlan.validate()) {
+                return;
+            }
+
+            boolean success;
+            if (this.mealPlan.id == null) {
+                success = this.mealPlan.insert();
+            } else {
+                for (Meal meal : this.mealPlan.getMeals()) {
+                    if (!meals.contains(meal)) {
+                        meal.delete();
+                    }
+                }
+
+                success = this.mealPlan.update();
+            }
+            if (!success) {
+                return;
+            }
+
+            for (Meal meal : meals) {
+                meal.plan_id = this.mealPlan.id;
+                if (!meal.validate()) {
+                    return;
+                }
+
+                if (meal.id == null) {
+                    success = meal.insert();
+                } else {
+                    success = meal.update();
+                }
+                if (!success) {
+                    return;
+                }
+            }
 
             dispose();
         });
         actionPanel.add(saveButtonPanel.contentPane);
+
+        if (mealPlan != null) {
+            ButtonPanel deleteButtonPanel = new ButtonPanel("Delete", event -> {
+                mealPlan.delete();
+
+                dispose();
+            });
+            actionPanel.add(deleteButtonPanel.contentPane);
+        }
 
         ButtonPanel cancelButtonPanel = new ButtonPanel("Cancel", event -> dispose());
         actionPanel.add(cancelButtonPanel.contentPane);
@@ -85,28 +134,59 @@ public class MealPlanUpdateFrame extends JDialog {
     }
 
     private void addMeal(Meal meal) {
-        // TODO: if meal null
+        Recipe recipe;
+        if (meal == null) {
+            RecipeSelectFrame recipeSelectFrame = new RecipeSelectFrame();
+            recipe = recipeSelectFrame.selectedRecipe;
+            if (recipe == null) {
+                return;
+            }
 
-        Recipe recipe = meal.getRecipe();
+            meal = new Meal();
+            meal.plan_id = mealPlan.id;
+            meal.recipe_id = recipe.id;
+        } else {
+            recipe = meal.getRecipe();
+        }
+        Meal mealFinal = meal; // for lambdas
+        meals.add(meal);
 
         JPanel recipePanel = new JPanel();
         recipePanel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
         recipePanel.setAlignmentX(0.0f);
         mealsPanel.add(recipePanel);
 
-        InputPanel foodNameInputPanel = new InputPanel("Recipe", recipe.name, 20, false);
+        InputPanel foodNameInputPanel = new InputPanel("Recipe", recipe.name, null, 20, false);
         recipePanel.add(foodNameInputPanel.contentPane);
 
         ButtonPanel editButtonPanel = new ButtonPanel("Edit", event -> {
-            // TODO
+            RecipeSelectFrame recipeSelectFrame = new RecipeSelectFrame();
+            Recipe selectedRecipe = recipeSelectFrame.selectedRecipe;
+            if (selectedRecipe == null) {
+                return;
+            }
+
+            mealFinal.recipe_id = selectedRecipe.id;
+            foodNameInputPanel.inputField.setText(selectedRecipe.name);
         });
         editButtonPanel.contentPane.remove(editButtonPanel.leftSeparator);
         recipePanel.add(editButtonPanel.contentPane);
 
-        InputPanel dayInputPanel = new InputPanel("Day", meal.day.toString(), 5);
-        InputPanel typeInputPanel = new InputPanel("Type", meal.type, 5);
+        InputPanel dayInputPanel = new InputPanel("Day", meal.day == null ? "" : meal.day.toString(), text -> {
+            Number parsedNumber;
+            try {
+                parsedNumber = Integer.parseInt(text);
+            } catch (NumberFormatException exception) {
+                mealFinal.day = null;
+                return;
+            }
+            mealFinal.day = parsedNumber;
+        }, 5);
+        InputPanel typeInputPanel = new InputPanel("Type", meal.type == null ? "" : meal.type, text -> mealFinal.type = text, 5);
 
         ButtonPanel deleteButtonPanel = new ButtonPanel("Delete", event -> {
+            meals.remove(mealFinal);
+
             mealsPanel.remove(recipePanel);
             mealsPanel.remove(dayInputPanel.contentPane);
             mealsPanel.remove(typeInputPanel.contentPane);
@@ -118,6 +198,8 @@ public class MealPlanUpdateFrame extends JDialog {
 
         mealsPanel.add(dayInputPanel.contentPane);
         mealsPanel.add(typeInputPanel.contentPane);
+
+        pack();
     }
 
     /**

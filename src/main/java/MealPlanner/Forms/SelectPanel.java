@@ -4,46 +4,21 @@ import javax.swing.*;
 import javax.swing.plaf.FontUIResource;
 import javax.swing.text.StyleContext;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.util.Locale;
-import java.util.function.Consumer;
 
-public class InputPanel extends Panel {
+public class SelectPanel extends Panel {
     public JPanel contentPane;
-    public JLabel keyLabel;
-    public JTextField inputField;
+    public JLabel label;
+    public JButton selectButton;
 
-    public InputPanel(String key, String value, Consumer<String> onChange, int columns, boolean enabled) {
+    public SelectPanel(String text, ActionListener onSelect) {
         $$$setupUI$$$();
 
-        keyLabel.setText(key);
-        inputField.setText(value);
-        if (onChange != null) {
-            inputField.addCaretListener(event -> onChange.accept(inputField.getText()));
-        }
-        inputField.setColumns(columns);
-        inputField.setEnabled(enabled);
+        label.setText(text);
+        selectButton.addActionListener(onSelect);
 
         updateSize(contentPane);
-    }
-
-    public InputPanel(String key, String value, Consumer<String> onChange, int columns) {
-        this(key, value, onChange, columns, true);
-    }
-
-    public InputPanel(String key, String value, Consumer<String> onChange) {
-        this(key, value, onChange, 30);
-    }
-
-    public InputPanel(String key, String value, int columns, boolean enabled) {
-        this(key, value, null, columns, enabled);
-    }
-
-    public InputPanel(String key, String value, int columns) {
-        this(key, value, null, columns);
-    }
-
-    public InputPanel(String key, String value) {
-        this(key, value, null);
     }
 
     /**
@@ -60,17 +35,17 @@ public class InputPanel extends Panel {
         final JSeparator separator1 = new JSeparator();
         separator1.setPreferredSize(new Dimension(10, 0));
         contentPane.add(separator1);
-        keyLabel = new JLabel();
-        Font keyLabelFont = this.$$$getFont$$$(null, -1, -1, keyLabel.getFont());
-        if (keyLabelFont != null) keyLabel.setFont(keyLabelFont);
-        keyLabel.setText("Label");
-        contentPane.add(keyLabel);
+        label = new JLabel();
+        Font labelFont = this.$$$getFont$$$(null, -1, -1, label.getFont());
+        if (labelFont != null) label.setFont(labelFont);
+        label.setText("Label");
+        contentPane.add(label);
         final JSeparator separator2 = new JSeparator();
-        separator2.setPreferredSize(new Dimension(20, 0));
+        separator2.setPreferredSize(new Dimension(10, 0));
         contentPane.add(separator2);
-        inputField = new JTextField();
-        inputField.setColumns(30);
-        contentPane.add(inputField);
+        selectButton = new JButton();
+        selectButton.setText("Select");
+        contentPane.add(selectButton);
         final JSeparator separator3 = new JSeparator();
         separator3.setPreferredSize(new Dimension(10, 0));
         contentPane.add(separator3);

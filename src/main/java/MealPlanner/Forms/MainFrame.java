@@ -38,7 +38,7 @@ public class MainFrame extends JFrame {
         setTitle("Meal Planner");
         setMinimumSize(new Dimension(400, 300));
         setSize(new Dimension(800, 600));
-        setLocationByPlatform(true);
+        setLocationRelativeTo(null);
 
         $$$setupUI$$$();
 
@@ -66,12 +66,15 @@ public class MainFrame extends JFrame {
                 case 3:
                     populateShoppingListTab();
                     break;
-                default:
-                    tabbedPane.setSelectedIndex(0);
-                    break;
             }
         });
         tabbedPane.setSelectedIndex(0);
+    }
+
+    public void refresh() {
+        int selectedIndex = tabbedPane.getSelectedIndex();
+        tabbedPane.setSelectedIndex(-1);
+        tabbedPane.setSelectedIndex(selectedIndex);
     }
 
     public void setupRecipeTab() {
@@ -86,7 +89,7 @@ public class MainFrame extends JFrame {
 
         recipeNewButton.addActionListener(event -> {
             new RecipeUpdateFrame(null);
-            populateRecipeTab();
+            refresh();
         });
     }
 
@@ -155,7 +158,7 @@ public class MainFrame extends JFrame {
 
         mealPlanNewButton.addActionListener(event -> {
             new MealPlanUpdateFrame(null);
-            populateRecipeTab();
+            refresh();
         });
     }
 

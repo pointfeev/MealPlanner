@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="MealPlanner.Forms.RecipeSelectFrame">
+  <grid id="27dc6" binding="topPane" layout-manager="FlowLayout" hgap="0" vgap="10" flow-align="0">
+    <constraints>
+      <xy x="20" y="20" width="412" height="253"/>
+    </constraints>
+    <properties>
+      <alignmentX value="0.0"/>
+    </properties>
+    <border type="none"/>
+    <children>
+      <component id="aaf5" class="javax.swing.JSeparator">
+        <constraints/>
+        <properties>
+          <preferredSize width="10" height="0"/>
+        </properties>
+      </component>
+      <component id="a65e4" class="javax.swing.JLabel" binding="label">
+        <constraints/>
+        <properties>
+          <font style="1"/>
+          <text value="Label"/>
+        </properties>
+      </component>
+      <component id="37086" class="javax.swing.JSeparator">
+        <constraints/>
+        <properties>
+          <preferredSize width="10" height="0"/>
+        </properties>
+      </component>
+    </children>
+  </grid>
+</form>

@@ -11,7 +11,7 @@ import java.time.LocalDate;
 public class MealPlan extends Model {
     @Ignore public static final String TABLE = "meal_plan";
 
-    @PrimaryKey @NotNull public Number id;
+    @PrimaryKey public Number id;
     @NotNull public String name;
     @NotNull @OrderBy("ASC") public Date week_start;
 

@@ -125,7 +125,7 @@ public class RecipePanel extends Panel {
         });
         editButton.addActionListener(event -> {
             new RecipeUpdateFrame(recipe);
-            Main.mainFrame.populateRecipeTab();
+            Main.mainFrame.refresh();
         });
 
         for (RecipeIngredient recipeIngredient : recipe.getIngredients()) {

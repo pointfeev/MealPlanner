@@ -1,51 +1,63 @@
 package MealPlanner.Forms;
 
 import MealPlanner.Main;
-import MealPlanner.Models.Meal;
-import MealPlanner.Models.MealPlan;
+import MealPlanner.Models.Recipe;
 
 import javax.swing.*;
 import javax.swing.plaf.FontUIResource;
 import javax.swing.text.StyleContext;
 import java.awt.*;
-import java.sql.Date;
 import java.util.Locale;
 
-public class MealPlanPanel extends Panel {
-    public MealPlan mealPlan;
+public class RecipeSelectFrame extends JDialog {
+    public Recipe selectedRecipe;
 
     public JPanel contentPane;
     public JPanel topPane;
-    public JLabel weekLabel;
-    public JLabel nameLabel;
-    public JButton editButton;
+    public JLabel label;
 
-    public MealPlanPanel(MealPlan mealPlan) {
+    public RecipeSelectFrame() {
+        super(Main.mainFrame, "Meal Planner - Select Recipe", true);
+        setResizable(false);
+
         $$$setupUI$$$();
 
         contentPane = new JPanel();
         contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
         contentPane.add(topPane);
 
-        this.mealPlan = mealPlan;
-        Date weekEnd = mealPlan.getWeekEnd();
-        weekLabel.setText("%s to %s".formatted(mealPlan.week_start, weekEnd));
-        nameLabel.setText(mealPlan.name);
-        editButton.addActionListener(event -> {
-            new MealPlanUpdateFrame(mealPlan);
-            Main.mainFrame.refresh();
-        });
+        Recipe[] recipes = new Recipe().select();
+        if (recipes.length == 0) {
+            label.setText("There are no recipes in the database; please add recipes before adding meals.");
+        } else {
+            label.setText("Select a recipe...");
 
-        for (Meal meal : mealPlan.getMeals()) {
-            contentPane.add(new MealPanel(mealPlan, meal).contentPane);
+            for (Recipe recipe : recipes) {
+                contentPane.add(new SelectPanel(recipe.name, event -> {
+                    selectedRecipe = recipe;
+                    dispose();
+                }).contentPane);
+            }
         }
 
-        JSeparator separator = new JSeparator();
-        separator.setMaximumSize(new Dimension(Integer.MAX_VALUE, 2));
-        contentPane.add(separator);
+        JPanel actionPanel = new JPanel();
+        actionPanel.setAlignmentX(0.0f);
+        FlowLayout actionPanelLayout = new FlowLayout(FlowLayout.CENTER, 0, 10);
+        actionPanel.setLayout(actionPanelLayout);
+        contentPane.add(actionPanel);
 
-        updateSize(topPane);
-        updateSize(contentPane);
+        ButtonPanel cancelButtonPanel = new ButtonPanel("Cancel", event -> {
+            selectedRecipe = null;
+            dispose();
+        });
+        actionPanel.add(cancelButtonPanel.contentPane);
+
+        setContentPane(contentPane);
+
+        pack();
+        setLocationRelativeTo(Main.mainFrame);
+
+        setVisible(true);
     }
 
     /**
@@ -57,35 +69,19 @@ public class MealPlanPanel extends Panel {
      */
     private void $$$setupUI$$$() {
         topPane = new JPanel();
-        topPane.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 5));
+        topPane.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 10));
         topPane.setAlignmentX(0.0f);
         final JSeparator separator1 = new JSeparator();
         separator1.setPreferredSize(new Dimension(10, 0));
         topPane.add(separator1);
-        weekLabel = new JLabel();
-        Font weekLabelFont = this.$$$getFont$$$(null, Font.ITALIC, -1, weekLabel.getFont());
-        if (weekLabelFont != null) weekLabel.setFont(weekLabelFont);
-        weekLabel.setText("Label");
-        topPane.add(weekLabel);
+        label = new JLabel();
+        Font labelFont = this.$$$getFont$$$(null, Font.BOLD, -1, label.getFont());
+        if (labelFont != null) label.setFont(labelFont);
+        label.setText("Label");
+        topPane.add(label);
         final JSeparator separator2 = new JSeparator();
-        separator2.setPreferredSize(new Dimension(20, 0));
+        separator2.setPreferredSize(new Dimension(10, 0));
         topPane.add(separator2);
-        nameLabel = new JLabel();
-        Font nameLabelFont = this.$$$getFont$$$(null, Font.BOLD, -1, nameLabel.getFont());
-        if (nameLabelFont != null) nameLabel.setFont(nameLabelFont);
-        nameLabel.setHorizontalAlignment(0);
-        nameLabel.setHorizontalTextPosition(0);
-        nameLabel.setText("Label");
-        topPane.add(nameLabel);
-        final JSeparator separator3 = new JSeparator();
-        separator3.setPreferredSize(new Dimension(20, 0));
-        topPane.add(separator3);
-        editButton = new JButton();
-        editButton.setText("Edit");
-        topPane.add(editButton);
-        final JSeparator separator4 = new JSeparator();
-        separator4.setPreferredSize(new Dimension(10, 0));
-        topPane.add(separator4);
     }
 
     /**
