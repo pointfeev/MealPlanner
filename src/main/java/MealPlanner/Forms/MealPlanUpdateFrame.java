@@ -182,7 +182,7 @@ public class MealPlanUpdateFrame extends JDialog {
             }
             mealFinal.day = parsedNumber;
         }, 5);
-        InputPanel typeInputPanel = new InputPanel("Type", meal.type == null ? "" : meal.type, text -> mealFinal.type = text, 5);
+        InputPanel typeInputPanel = new InputPanel("Type", meal.type == null ? "" : meal.type, text -> mealFinal.type = text.toLowerCase(), 5);
 
         ButtonPanel deleteButtonPanel = new ButtonPanel("Delete", event -> {
             meals.remove(mealFinal);
