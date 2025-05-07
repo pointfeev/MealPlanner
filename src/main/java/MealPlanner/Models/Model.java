@@ -180,7 +180,7 @@ public abstract class Model {
                 }
 
                 Object value = field.get(this);
-                if (value == null) {
+                if (value == null || (value instanceof String && ((String) value).isBlank())) {
                     if (field.getAnnotation(NotNull.class) != null) {
                         displayErrorDialog("Please enter a valid value for field '%s'!".formatted(field.getName()));
                         return false;
@@ -345,7 +345,7 @@ public abstract class Model {
 
                 if (field.getAnnotation(PrimaryKey.class) != null) {
                     if (!keysBuilder.isEmpty()) {
-                        keysBuilder.append(", ");
+                        keysBuilder.append(" AND ");
                     }
                     keysBuilder.append("%s = ?".formatted(fieldName));
                     keyKeysAndValuesList.add(field.get(this));
@@ -413,7 +413,7 @@ public abstract class Model {
                 String fieldName = field.getName();
 
                 if (!keysBuilder.isEmpty()) {
-                    keysBuilder.append(", ");
+                    keysBuilder.append(" AND ");
                 }
                 keysBuilder.append("%s = ?".formatted(fieldName));
                 keyKeysAndValuesList.add(field.get(this));

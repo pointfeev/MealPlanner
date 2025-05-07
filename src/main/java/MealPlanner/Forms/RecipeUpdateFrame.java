@@ -13,9 +13,10 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Locale;
 
+import static MealPlanner.Main.displayErrorDialog;
+
 public class RecipeUpdateFrame extends JDialog {
     public Recipe recipe;
-    public Recipe recipeToSave;
 
     public JPanel contentPane;
     public JPanel topPane;
@@ -25,7 +26,7 @@ public class RecipeUpdateFrame extends JDialog {
     public JPanel instructionsPanel;
 
     public ArrayList<RecipeIngredient> ingredients;
-    public ArrayList<RecipeIngredient> instructions;
+    public ArrayList<RecipeInstruction> instructions;
 
     public RecipeUpdateFrame(Recipe recipe) {
         super(Main.mainFrame, "Meal Planner - %s Recipe".formatted(recipe == null ? "New" : "Edit"), true);
@@ -37,12 +38,11 @@ public class RecipeUpdateFrame extends JDialog {
         contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
         contentPane.add(topPane);
 
-        this.recipe = recipe;
-        recipeToSave = recipe == null ? new Recipe() : recipe;
         label.setText("%s recipe...".formatted(recipe == null ? "Adding new" : "Editing existing"));
+        this.recipe = recipe == null ? new Recipe() : recipe;
 
-        contentPane.add(new InputPanel("Name", recipe == null ? "" : recipe.name, 30).contentPane);
-        contentPane.add(new InputPanel("Category", recipe == null ? "" : recipe.category, 30).contentPane);
+        contentPane.add(new InputPanel("Name", this.recipe.name == null ? "" : this.recipe.name, text -> this.recipe.name = text).contentPane);
+        contentPane.add(new InputPanel("Category", this.recipe.name == null ? "" : this.recipe.category, text -> this.recipe.category = text).contentPane);
 
         JSeparator ingredientSeparator = new JSeparator();
         ingredientSeparator.setMaximumSize(new Dimension(0, 5));
@@ -85,20 +85,81 @@ public class RecipeUpdateFrame extends JDialog {
         contentPane.add(actionPanel);
 
         ButtonPanel saveButtonPanel = new ButtonPanel("Save", event -> {
-            // TODO: set values on recipeToSave from input boxes
-            //       may want to add listeners to input boxes instead for this
-            //       same for ingredients and instructions
+            for (RecipeInstruction instruction1 : instructions) {
+                for (RecipeInstruction instruction2 : instructions) {
+                    if (instruction1 == instruction2) {
+                        continue;
+                    }
 
-            // ArrayList<RecipeIngredient> ingredientsToRemove = new ArrayList<>(Arrays.asList(recipeToSave.getIngredients()));
-            // ingredientsToRemove.removeAll(ingredients);
-            // System.out.println(ingredientsToRemove);
-            // for (RecipeInstruction instruction : recipe.getInstructions()) {
-            //     addInstruction(instruction);
-            // }
+                    if (instruction1.step != null && instruction2.step != null && instruction1.step.intValue() == instruction2.step.intValue()) {
+                        displayErrorDialog("Instructions cannot have the same step number!");
+                        return;
+                    }
+                }
+            }
+
+            if (!this.recipe.validate()) {
+                return;
+            }
+
+            boolean success;
+            if (this.recipe.id == null) {
+                success = this.recipe.insert();
+            } else {
+                // TODO: ingredients
+
+                for (RecipeInstruction instruction : this.recipe.getInstructions()) {
+                    if (!instructions.contains(instruction)) {
+                        instruction.delete();
+                    }
+                }
+
+                success = this.recipe.update();
+            }
+            if (!success) {
+                return;
+            }
+
+            // TODO: ingredients
+
+            for (RecipeInstruction instruction : instructions) {
+                instruction.recipe_id = this.recipe.id;
+                if (!instruction.validate()) {
+                    return;
+                }
+
+                boolean exists = false;
+                for (RecipeInstruction existingInstruction : this.recipe.getInstructions()) {
+                    if (instruction == existingInstruction) {
+                        success = instruction.update();
+                        exists = true;
+                        break;
+                    }
+                }
+                if (!exists) {
+                    success = instruction.insert();
+                }
+                if (!success) {
+                    return;
+                }
+            }
 
             dispose();
         });
         actionPanel.add(saveButtonPanel.contentPane);
+
+        if (recipe != null) {
+            ButtonPanel deleteButtonPanel = new ButtonPanel("Delete", event -> {
+                int option = JOptionPane.showOptionDialog(this, "Are you sure you want to delete this recipe?" + "\n\nMeals associated with this recipe will also be deleted!", "Meal Planner - Delete Recipe", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, null, null);
+                if (option != JOptionPane.YES_OPTION) {
+                    return;
+                }
+                recipe.delete();
+
+                dispose();
+            });
+            actionPanel.add(deleteButtonPanel.contentPane);
+        }
 
         ButtonPanel cancelButtonPanel = new ButtonPanel("Cancel", event -> dispose());
         actionPanel.add(cancelButtonPanel.contentPane);
@@ -121,9 +182,7 @@ public class RecipeUpdateFrame extends JDialog {
         foodPanel.setAlignmentX(0.0f);
         ingredientsPanel.add(foodPanel);
 
-        InputPanel foodNameInputPanel = new InputPanel("Item", "%s of %s".formatted(
-                foodItem.unit.substring(0, 1).toUpperCase() + foodItem.unit.substring(1).toLowerCase(),
-                foodItem.name), 20, false);
+        InputPanel foodNameInputPanel = new InputPanel("Item", "%s of %s".formatted(foodItem.unit.substring(0, 1).toUpperCase() + foodItem.unit.substring(1).toLowerCase(), foodItem.name), 20, false);
         foodPanel.add(foodNameInputPanel.contentPane);
 
         ButtonPanel editButtonPanel = new ButtonPanel("Edit", event -> {
@@ -147,18 +206,37 @@ public class RecipeUpdateFrame extends JDialog {
     }
 
     private void addInstruction(RecipeInstruction instruction) {
+        if (instruction == null) {
+            instruction = new RecipeInstruction();
+            instruction.recipe_id = recipe.id;
+        }
+        RecipeInstruction instructionFinal = instruction; // for lambdas
+        instructions.add(instruction);
+
         JPanel instructionPanel = new JPanel();
         instructionPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
         instructionPanel.setAlignmentX(0.0f);
         instructionsPanel.add(instructionPanel);
 
-        instructionPanel.add(new InputPanel("Step #", instruction == null ? "" : instruction.step.toString(), 5).contentPane);
+        instructionPanel.add(new InputPanel("Step #", instruction.step == null ? "" : instruction.step.toString(), text -> {
+            Number parsedNumber;
+            try {
+                parsedNumber = Integer.parseInt(text);
+            } catch (NumberFormatException exception) {
+                instructionFinal.step = null;
+                return;
+            }
+            instructionFinal.step = parsedNumber;
+        }, 5).contentPane);
 
-        InputPanel instructionInputPanel = new InputPanel("Instruction", instruction == null ? "" : instruction.instruction, 30);
+        InputPanel instructionInputPanel = new InputPanel("Instruction", instruction.instruction == null ? "" : instruction.instruction, text -> instructionFinal.instruction = text);
 
         ButtonPanel deleteButtonPanel = new ButtonPanel("Delete", event -> {
+            instructions.remove(instructionFinal);
+
             instructionsPanel.remove(instructionPanel);
             instructionsPanel.remove(instructionInputPanel.contentPane);
+
             pack();
         });
         deleteButtonPanel.contentPane.remove(deleteButtonPanel.leftSeparator);

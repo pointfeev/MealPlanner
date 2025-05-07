@@ -115,6 +115,11 @@ public class MealPlanUpdateFrame extends JDialog {
 
         if (mealPlan != null) {
             ButtonPanel deleteButtonPanel = new ButtonPanel("Delete", event -> {
+                int option = JOptionPane.showOptionDialog(this, "Are you sure you want to delete this meal plan?",
+                        "Meal Planner - Delete Meal Plan", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, null, null);
+                if (option != JOptionPane.YES_OPTION) {
+                    return;
+                }
                 mealPlan.delete();
 
                 dispose();
