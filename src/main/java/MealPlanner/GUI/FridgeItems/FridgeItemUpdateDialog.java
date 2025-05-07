@@ -45,6 +45,7 @@ public class FridgeItemUpdateDialog extends JDialog {
 
         ButtonPanel editButtonPanel = new ButtonPanel("Edit", event -> {
             FoodItemSelectDialog foodItemSelectDialog = new FoodItemSelectDialog();
+
             FoodItem selectedFoodItem = foodItemSelectDialog.selectedFoodItem;
             if (selectedFoodItem != null) {
                 this.fridgeItem.food_id = selectedFoodItem.id;

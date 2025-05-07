@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 public class RecipeUpdateDialog extends JDialog {
+    private final ArrayList<InputPanel> itemInputPanels;
+
     public Recipe recipe;
 
     public JPanel contentPane;
@@ -51,6 +53,7 @@ public class RecipeUpdateDialog extends JDialog {
         contentPane.add(ingredientSeparator);
 
         ingredients = new ArrayList<>();
+        itemInputPanels = new ArrayList<>();
         contentPane.add(new HeaderPanel("Ingredients").contentPane);
 
         ingredientsPanel = new JPanel();
@@ -200,11 +203,26 @@ public class RecipeUpdateDialog extends JDialog {
         setVisible(true);
     }
 
+    private void updateIngredientItemInputs() {
+        for (InputPanel itemInputPanel : itemInputPanels) {
+            RecipeIngredient ingredient = (RecipeIngredient) itemInputPanel.contentPane.getClientProperty("ingredient");
+            if (ingredient == null) {
+                continue;
+            }
+
+            ingredient.clearCache();
+            FoodItem updatedFoodItem = ingredient.getFoodItem();
+            itemInputPanel.inputField.setText(updatedFoodItem.toString());
+        }
+    }
+
     private void addIngredient(RecipeIngredient ingredient) {
         FoodItem foodItem;
         if (ingredient == null) {
             FoodItemSelectDialog foodItemSelectDialog = new FoodItemSelectDialog();
-            // TODO: update/refresh the whole ingredients panel here to resolve issues with changed food items
+
+            updateIngredientItemInputs();
+
             foodItem = foodItemSelectDialog.selectedFoodItem;
             if (foodItem == null) {
                 return;
@@ -225,18 +243,19 @@ public class RecipeUpdateDialog extends JDialog {
         ingredientsPanel.add(foodPanel);
 
         InputPanel foodNameInputPanel = new InputPanel("Item", foodItem.toString(), 20, false);
+        foodNameInputPanel.contentPane.putClientProperty("ingredient", ingredient);
+        itemInputPanels.add(foodNameInputPanel);
         foodPanel.add(foodNameInputPanel.contentPane);
 
         ButtonPanel editButtonPanel = new ButtonPanel("Edit", event -> {
             FoodItemSelectDialog foodItemSelectDialog = new FoodItemSelectDialog();
-            // TODO: update/refresh the whole ingredients panel here to resolve issues with changed food items
+
             FoodItem selectedFoodItem = foodItemSelectDialog.selectedFoodItem;
-            if (selectedFoodItem == null) {
-                return;
+            if (selectedFoodItem != null) {
+                ingredientFinal.food_id = selectedFoodItem.id;
             }
 
-            ingredientFinal.food_id = selectedFoodItem.id;
-            foodNameInputPanel.inputField.setText(selectedFoodItem.toString());
+            updateIngredientItemInputs();
         });
         editButtonPanel.contentPane.remove(editButtonPanel.leftSeparator);
         foodPanel.add(editButtonPanel.contentPane);
@@ -258,6 +277,7 @@ public class RecipeUpdateDialog extends JDialog {
 
         ButtonPanel deleteButtonPanel = new ButtonPanel("Delete", event -> {
             ingredients.remove(ingredientFinal);
+            itemInputPanels.remove(foodNameInputPanel);
 
             ingredientsPanel.remove(foodPanel);
             ingredientsPanel.remove(quantityInputPanel.contentPane);
