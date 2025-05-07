@@ -31,13 +31,13 @@ public class DetailPanel extends Panel {
      */
     private void $$$setupUI$$$() {
         contentPane = new JPanel();
-        contentPane.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 10));
+        contentPane.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 5));
         contentPane.setAlignmentX(0.0f);
         final JSeparator separator1 = new JSeparator();
         separator1.setPreferredSize(new Dimension(10, 0));
         contentPane.add(separator1);
         keyLabel = new JLabel();
-        Font keyLabelFont = this.$$$getFont$$$(null, Font.BOLD | Font.ITALIC, -1, keyLabel.getFont());
+        Font keyLabelFont = this.$$$getFont$$$(null, Font.BOLD, -1, keyLabel.getFont());
         if (keyLabelFont != null) keyLabel.setFont(keyLabelFont);
         keyLabel.setText("Label");
         contentPane.add(keyLabel);

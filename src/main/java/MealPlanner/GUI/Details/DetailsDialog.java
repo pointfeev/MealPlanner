@@ -28,6 +28,10 @@ public class DetailsDialog extends JDialog {
             contentPane.add(new DetailPanel(keys[index], values[index]).contentPane);
         }
 
+        JSeparator separator = new JSeparator();
+        separator.setMaximumSize(new Dimension(0, 5));
+        contentPane.add(separator);
+
         setContentPane(contentPane);
 
         pack();
