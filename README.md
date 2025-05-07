@@ -9,3 +9,5 @@ folder, rename it to `database.properties`, and edit it to contain your Oracle d
 To install and run on **Windows**, use `.\Run.bat`.
 
 To install and run on **Linux**, use `./Run.sh`.
+
+If you encounter build issues running the application, install the latest Temurin JDK LTS from https://adoptium.net/temurin/releases; this application was tested with Temurin JDK version 21.
