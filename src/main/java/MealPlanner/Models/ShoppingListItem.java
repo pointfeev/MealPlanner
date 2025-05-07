@@ -22,4 +22,8 @@ public class ShoppingListItem extends Model {
         }
         return foodItem;
     }
+
+    public void clearCache() {
+        foodItem = null;
+    }
 }

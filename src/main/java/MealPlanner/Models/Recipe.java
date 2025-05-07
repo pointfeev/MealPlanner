@@ -31,4 +31,9 @@ public class Recipe extends Model {
         }
         return instructions;
     }
+
+    public void clearCache() {
+        ingredients = null;
+        instructions = null;
+    }
 }

@@ -25,4 +25,8 @@ public class Meal extends Model {
         }
         return recipe;
     }
+
+    public void clearCache() {
+        recipe = null;
+    }
 }

@@ -27,4 +27,8 @@ public class RecipeIngredient extends Model {
         }
         return foodItem;
     }
+
+    public void clearCache() {
+        foodItem = null;
+    }
 }

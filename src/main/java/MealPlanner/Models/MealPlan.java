@@ -37,4 +37,9 @@ public class MealPlan extends Model {
         }
         return meals;
     }
+
+    public void clearCache() {
+        weekEnd = null;
+        meals = null;
+    }
 }

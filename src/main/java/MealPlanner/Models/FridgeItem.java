@@ -26,4 +26,8 @@ public class FridgeItem extends Model {
         }
         return foodItem;
     }
+
+    public void clearCache() {
+        foodItem = null;
+    }
 }
