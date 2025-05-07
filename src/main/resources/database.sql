@@ -138,16 +138,23 @@ CREATE TABLE fridge_item
 /
 
 CREATE OR REPLACE VIEW shopping_list_item AS
-SELECT food_item.id                                                         AS food_id,
-       GREATEST(SUM(ingredient.quantity) - NVL(fridge_item.quantity, 0), 0) AS quantity
-FROM food_item
-         LEFT JOIN recipe_ingredient ingredient ON food_item.id = ingredient.food_id
-         LEFT JOIN meal ON ingredient.recipe_id = meal.recipe_id
-         LEFT JOIN meal_plan ON meal.plan_id = meal_plan.id
-         LEFT JOIN fridge_item ON food_item.id = fridge_item.food_id
-WHERE meal_plan.week_start >= CURRENT_DATE - 1
-GROUP BY food_item.id, fridge_item.quantity
-HAVING GREATEST(SUM(ingredient.quantity) - NVL(fridge_item.quantity, 0), 0) > 0
+WITH recipe_needs AS (SELECT fi.id                    AS food_id,
+                             NVL(SUM(ri.quantity), 0) AS needed_quantity
+FROM food_item fi
+         LEFT JOIN recipe_ingredient ri ON fi.id = ri.food_id
+         LEFT JOIN meal m ON ri.recipe_id = m.recipe_id
+         LEFT JOIN meal_plan mp ON m.plan_id = mp.id
+WHERE mp.week_start >= CURRENT_DATE - 1
+GROUP BY fi.id),
+     fridge_stock AS (SELECT food_id,
+                             NVL(SUM(quantity), 0) AS available_quantity
+     FROM fridge_item
+     GROUP BY food_id)
+SELECT rn.food_id,
+       GREATEST(rn.needed_quantity - NVL(fs.available_quantity, 0), 0) AS quantity
+FROM recipe_needs rn
+         LEFT JOIN fridge_stock fs ON rn.food_id = fs.food_id
+WHERE GREATEST(rn.needed_quantity - NVL(fs.available_quantity, 0), 0) > 0
 /
 
 INSERT INTO meal_plan

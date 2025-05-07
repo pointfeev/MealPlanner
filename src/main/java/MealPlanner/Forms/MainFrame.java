@@ -232,7 +232,8 @@ public class MainFrame extends JFrame {
         fridgeSearchField.addCaretListener(event -> updateFridgeItemPanelsVisibility());
 
         fridgeNewButton.addActionListener(event -> {
-            // TODO
+            new FridgeItemUpdatePanel(null);
+            refresh();
         });
     }
 

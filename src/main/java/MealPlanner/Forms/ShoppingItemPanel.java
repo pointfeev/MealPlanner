@@ -24,7 +24,7 @@ public class ShoppingItemPanel extends Panel {
 
         this.shoppingListItem = shoppingListItem;
         FoodItem foodItem = shoppingListItem.getFoodItem();
-        label.setText("%s %s(s) of %s".formatted(shoppingListItem.quantity, foodItem.unit, foodItem.name));
+        label.setText(foodItem.formatQuantity(shoppingListItem.quantity.intValue()));
         detailsButton.addActionListener(event -> {
             ArrayList<String> keysList = new ArrayList<>();
             ArrayList<String> valuesList = new ArrayList<>();

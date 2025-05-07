@@ -21,7 +21,7 @@ public class RecipeIngredientPanel extends Panel {
 
         this.recipeIngredient = recipeIngredient;
         FoodItem foodItem = recipeIngredient.getFoodItem();
-        label.setText("%s %s(s) of %s".formatted(recipeIngredient.quantity, foodItem.unit, foodItem.name));
+        label.setText(foodItem.formatQuantity(recipeIngredient.quantity.intValue()));
         detailsButton.addActionListener(event -> {
             ArrayList<String> keysList = new ArrayList<>();
             ArrayList<String> valuesList = new ArrayList<>();

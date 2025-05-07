@@ -1,5 +1,6 @@
 package MealPlanner.Forms;
 
+import MealPlanner.Main;
 import MealPlanner.Models.FoodItem;
 import MealPlanner.Models.FridgeItem;
 
@@ -25,7 +26,7 @@ public class FridgeItemPanel extends Panel {
 
         this.fridgeItem = fridgeItem;
         FoodItem foodItem = fridgeItem.getFoodItem();
-        label.setText("%s %s(s) of %s".formatted(fridgeItem.quantity, foodItem.unit, foodItem.name));
+        label.setText(foodItem.formatQuantity(fridgeItem.quantity.intValue()));
         detailsButton.addActionListener(event -> {
             ArrayList<String> keysList = new ArrayList<>();
             ArrayList<String> valuesList = new ArrayList<>();
@@ -70,7 +71,8 @@ public class FridgeItemPanel extends Panel {
             new DetailsFrame(label.getText(), keysList.toArray(new String[0]), valuesList.toArray(new String[0]));
         });
         editButton.addActionListener(event -> {
-            // TODO
+            new FridgeItemUpdatePanel(fridgeItem);
+            Main.mainFrame.refresh();
         });
 
         updateSize(contentPane);
