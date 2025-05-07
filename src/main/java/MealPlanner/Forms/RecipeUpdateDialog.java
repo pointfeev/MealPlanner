@@ -13,7 +13,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class RecipeUpdateFrame extends JDialog {
+public class RecipeUpdateDialog extends JDialog {
     public Recipe recipe;
 
     public JPanel contentPane;
@@ -26,7 +26,7 @@ public class RecipeUpdateFrame extends JDialog {
     public ArrayList<RecipeIngredient> ingredients;
     public ArrayList<RecipeInstruction> instructions;
 
-    public RecipeUpdateFrame(Recipe recipe) {
+    public RecipeUpdateDialog(Recipe recipe) {
         super(Main.mainFrame, "Meal Planner - %s Recipe".formatted(recipe == null ? "New" : "Edit"), true);
         setResizable(false);
 
@@ -174,8 +174,8 @@ public class RecipeUpdateFrame extends JDialog {
     private void addIngredient(RecipeIngredient ingredient) {
         FoodItem foodItem;
         if (ingredient == null) {
-            FoodItemSelectFrame foodItemSelectFrame = new FoodItemSelectFrame();
-            foodItem = foodItemSelectFrame.selectedFoodItem;
+            FoodItemSelectDialog foodItemSelectDialog = new FoodItemSelectDialog();
+            foodItem = foodItemSelectDialog.selectedFoodItem;
             if (foodItem == null) {
                 return;
             }
@@ -198,8 +198,8 @@ public class RecipeUpdateFrame extends JDialog {
         foodPanel.add(foodNameInputPanel.contentPane);
 
         ButtonPanel editButtonPanel = new ButtonPanel("Edit", event -> {
-            FoodItemSelectFrame foodItemSelectFrame = new FoodItemSelectFrame();
-            FoodItem selectedFoodItem = foodItemSelectFrame.selectedFoodItem;
+            FoodItemSelectDialog foodItemSelectDialog = new FoodItemSelectDialog();
+            FoodItem selectedFoodItem = foodItemSelectDialog.selectedFoodItem;
             if (selectedFoodItem == null) {
                 return;
             }

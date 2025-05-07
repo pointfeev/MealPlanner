@@ -11,15 +11,13 @@ public class FoodItemSelectPanel extends Panel {
     public JPanel contentPane;
     public JLabel label;
     public JButton selectButton;
-    public JButton detailsButton;
     public JButton editButton;
 
-    public FoodItemSelectPanel(String text, ActionListener onSelect, ActionListener onDetails, ActionListener onEdit) {
+    public FoodItemSelectPanel(String text, ActionListener onSelect, ActionListener onEdit) {
         $$$setupUI$$$();
 
         label.setText(text);
         selectButton.addActionListener(onSelect);
-        detailsButton.addActionListener(onDetails);
         editButton.addActionListener(onEdit);
 
         updateSize(contentPane);
@@ -53,18 +51,12 @@ public class FoodItemSelectPanel extends Panel {
         final JSeparator separator3 = new JSeparator();
         separator3.setPreferredSize(new Dimension(10, 0));
         contentPane.add(separator3);
-        detailsButton = new JButton();
-        detailsButton.setText("Details");
-        contentPane.add(detailsButton);
-        final JSeparator separator4 = new JSeparator();
-        separator4.setPreferredSize(new Dimension(10, 0));
-        contentPane.add(separator4);
         editButton = new JButton();
         editButton.setText("Edit");
         contentPane.add(editButton);
-        final JSeparator separator5 = new JSeparator();
-        separator5.setPreferredSize(new Dimension(10, 0));
-        contentPane.add(separator5);
+        final JSeparator separator4 = new JSeparator();
+        separator4.setPreferredSize(new Dimension(10, 0));
+        contentPane.add(separator4);
     }
 
     /**

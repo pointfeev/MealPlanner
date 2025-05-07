@@ -88,7 +88,7 @@ public class MainFrame extends JFrame {
         recipeSearchField.addCaretListener(event -> updateRecipePanelsVisibility());
 
         recipeNewButton.addActionListener(event -> {
-            new RecipeUpdateFrame(null);
+            new RecipeUpdateDialog(null);
             refresh();
         });
     }
@@ -157,7 +157,7 @@ public class MainFrame extends JFrame {
         mealPlanShowPastCheckBox.addItemListener(event -> updateMealPlanPanelsVisibility());
 
         mealPlanNewButton.addActionListener(event -> {
-            new MealPlanUpdateFrame(null);
+            new MealPlanUpdateDialog(null);
             refresh();
         });
     }
@@ -232,7 +232,7 @@ public class MainFrame extends JFrame {
         fridgeSearchField.addCaretListener(event -> updateFridgeItemPanelsVisibility());
 
         fridgeNewButton.addActionListener(event -> {
-            new FridgeItemUpdatePanel(null);
+            new FridgeItemUpdateDialog(null);
             refresh();
         });
     }

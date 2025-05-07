@@ -8,12 +8,12 @@ import javax.swing.text.StyleContext;
 import java.awt.*;
 import java.util.Locale;
 
-public class DetailsFrame extends JDialog {
+public class DetailsDialog extends JDialog {
     public JPanel contentPane;
     public JPanel topPane;
     public JLabel label;
 
-    public DetailsFrame(String header, String[] keys, String[] values) {
+    public DetailsDialog(String header, String[] keys, String[] values) {
         super(Main.mainFrame, "Meal Planner - Details", true);
         setResizable(false);
 

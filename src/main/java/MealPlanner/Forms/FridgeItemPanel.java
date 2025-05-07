@@ -26,7 +26,7 @@ public class FridgeItemPanel extends Panel {
         label.setText(foodItem.formatQuantity(fridgeItem.quantity.intValue()));
         detailsButton.addActionListener(event -> foodItem.getDetails(label.getText(), fridgeItem.quantity));
         editButton.addActionListener(event -> {
-            new FridgeItemUpdatePanel(fridgeItem);
+            new FridgeItemUpdateDialog(fridgeItem);
             Main.mainFrame.refresh();
         });
 

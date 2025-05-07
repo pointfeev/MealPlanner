@@ -10,14 +10,14 @@ import javax.swing.text.StyleContext;
 import java.awt.*;
 import java.util.Locale;
 
-public class FridgeItemUpdatePanel extends JDialog {
+public class FridgeItemUpdateDialog extends JDialog {
     public FridgeItem fridgeItem;
 
     public JPanel contentPane;
     public JPanel topPane;
     public JLabel label;
 
-    public FridgeItemUpdatePanel(FridgeItem fridgeItem) {
+    public FridgeItemUpdateDialog(FridgeItem fridgeItem) {
         super(Main.mainFrame, "Meal Planner - %s Fridge/Pantry Item".formatted(fridgeItem == null ? "New" : "Edit"), true);
         setResizable(false);
 
@@ -41,8 +41,8 @@ public class FridgeItemUpdatePanel extends JDialog {
         foodPanel.add(foodNameInputPanel.contentPane);
 
         ButtonPanel editButtonPanel = new ButtonPanel("Edit", event -> {
-            FoodItemSelectFrame foodItemSelectFrame = new FoodItemSelectFrame();
-            FoodItem selectedFoodItem = foodItemSelectFrame.selectedFoodItem;
+            FoodItemSelectDialog foodItemSelectDialog = new FoodItemSelectDialog();
+            FoodItem selectedFoodItem = foodItemSelectDialog.selectedFoodItem;
             if (selectedFoodItem == null) {
                 return;
             }

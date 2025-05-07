@@ -13,7 +13,7 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class MealPlanUpdateFrame extends JDialog {
+public class MealPlanUpdateDialog extends JDialog {
     public MealPlan mealPlan;
 
     public JPanel contentPane;
@@ -24,7 +24,7 @@ public class MealPlanUpdateFrame extends JDialog {
 
     public ArrayList<Meal> meals;
 
-    public MealPlanUpdateFrame(MealPlan mealPlan) {
+    public MealPlanUpdateDialog(MealPlan mealPlan) {
         super(Main.mainFrame, "Meal Planner - %s Meal Plan".formatted(mealPlan == null ? "New" : "Edit"), true);
         setResizable(false);
 
@@ -141,8 +141,8 @@ public class MealPlanUpdateFrame extends JDialog {
     private void addMeal(Meal meal) {
         Recipe recipe;
         if (meal == null) {
-            RecipeSelectFrame recipeSelectFrame = new RecipeSelectFrame();
-            recipe = recipeSelectFrame.selectedRecipe;
+            RecipeSelectDialog recipeSelectDialog = new RecipeSelectDialog();
+            recipe = recipeSelectDialog.selectedRecipe;
             if (recipe == null) {
                 return;
             }
@@ -165,8 +165,8 @@ public class MealPlanUpdateFrame extends JDialog {
         recipePanel.add(foodNameInputPanel.contentPane);
 
         ButtonPanel editButtonPanel = new ButtonPanel("Edit", event -> {
-            RecipeSelectFrame recipeSelectFrame = new RecipeSelectFrame();
-            Recipe selectedRecipe = recipeSelectFrame.selectedRecipe;
+            RecipeSelectDialog recipeSelectDialog = new RecipeSelectDialog();
+            Recipe selectedRecipe = recipeSelectDialog.selectedRecipe;
             if (selectedRecipe == null) {
                 return;
             }

@@ -40,18 +40,6 @@
           <preferredSize width="10" height="0"/>
         </properties>
       </component>
-      <component id="8948c" class="javax.swing.JButton" binding="detailsButton">
-        <constraints/>
-        <properties>
-          <text value="Details"/>
-        </properties>
-      </component>
-      <component id="cc832" class="javax.swing.JSeparator">
-        <constraints/>
-        <properties>
-          <preferredSize width="10" height="0"/>
-        </properties>
-      </component>
       <component id="6f81" class="javax.swing.JButton" binding="editButton">
         <constraints/>
         <properties>

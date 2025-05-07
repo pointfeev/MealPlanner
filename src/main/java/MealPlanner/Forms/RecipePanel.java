@@ -121,10 +121,10 @@ public class RecipePanel extends Panel {
                 valuesList.add(formatMilligrams(protein));
             }
 
-            new DetailsFrame(recipe.name, keysList.toArray(new String[0]), valuesList.toArray(new String[0]));
+            new DetailsDialog(recipe.name, keysList.toArray(new String[0]), valuesList.toArray(new String[0]));
         });
         editButton.addActionListener(event -> {
-            new RecipeUpdateFrame(recipe);
+            new RecipeUpdateDialog(recipe);
             Main.mainFrame.refresh();
         });
 

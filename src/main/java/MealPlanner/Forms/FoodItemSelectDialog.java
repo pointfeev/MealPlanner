@@ -1,7 +1,7 @@
 package MealPlanner.Forms;
 
 import MealPlanner.Main;
-import MealPlanner.Models.Recipe;
+import MealPlanner.Models.FoodItem;
 
 import javax.swing.*;
 import javax.swing.plaf.FontUIResource;
@@ -9,15 +9,16 @@ import javax.swing.text.StyleContext;
 import java.awt.*;
 import java.util.Locale;
 
-public class RecipeSelectFrame extends JDialog {
-    public Recipe selectedRecipe;
+public class FoodItemSelectDialog extends JDialog {
+    public FoodItem selectedFoodItem;
 
     public JPanel contentPane;
     public JPanel topPane;
+    public JPanel foodPane;
     public JLabel label;
 
-    public RecipeSelectFrame() {
-        super(Main.mainFrame, "Meal Planner - Select Recipe", true);
+    public FoodItemSelectDialog() {
+        super(Main.mainFrame, "Meal Planner - Select Item", true);
         setResizable(false);
 
         $$$setupUI$$$();
@@ -26,19 +27,9 @@ public class RecipeSelectFrame extends JDialog {
         contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
         contentPane.add(topPane);
 
-        Recipe[] recipes = new Recipe().select();
-        if (recipes.length == 0) {
-            label.setText("There are no recipes in the database; please add recipes before adding meals.");
-        } else {
-            label.setText("Select a recipe...");
-
-            for (Recipe recipe : recipes) {
-                contentPane.add(new RecipeSelectPanel(recipe.name, event -> {
-                    selectedRecipe = recipe;
-                    dispose();
-                }).contentPane);
-            }
-        }
+        foodPane = new JPanel();
+        foodPane.setLayout(new BoxLayout(foodPane, BoxLayout.Y_AXIS));
+        contentPane.add(foodPane);
 
         JPanel actionPanel = new JPanel();
         actionPanel.setAlignmentX(0.0f);
@@ -46,18 +37,47 @@ public class RecipeSelectFrame extends JDialog {
         actionPanel.setLayout(actionPanelLayout);
         contentPane.add(actionPanel);
 
+        ButtonPanel newItemButtonPanel = new ButtonPanel("New Item", event -> {
+            // TODO
+            populate();
+        });
+        actionPanel.add(newItemButtonPanel.contentPane);
+
         ButtonPanel cancelButtonPanel = new ButtonPanel("Cancel", event -> {
-            selectedRecipe = null;
+            selectedFoodItem = null;
             dispose();
         });
         actionPanel.add(cancelButtonPanel.contentPane);
 
         setContentPane(contentPane);
 
-        pack();
+        populate();
         setLocationRelativeTo(Main.mainFrame);
 
         setVisible(true);
+    }
+
+    public void populate() {
+        foodPane.removeAll();
+
+        FoodItem[] foodItems = new FoodItem().select();
+        if (foodItems.length == 0) {
+            label.setText("There are no items in the database.");
+        } else {
+            label.setText("Select item...");
+
+            for (FoodItem foodItem : foodItems) {
+                foodPane.add(new FoodItemSelectPanel(foodItem.toString(), event -> {
+                    selectedFoodItem = foodItem;
+                    dispose();
+                }, event -> {
+                    // TODO: onEdit
+                    populate();
+                }).contentPane);
+            }
+        }
+
+        pack();
     }
 
     /**

@@ -1,6 +1,6 @@
 package MealPlanner.Models;
 
-import MealPlanner.Forms.DetailsFrame;
+import MealPlanner.Forms.DetailsDialog;
 import MealPlanner.Models.Annotations.CheckString;
 import MealPlanner.Models.Annotations.Ignore;
 import MealPlanner.Models.Annotations.NotNull;
@@ -80,7 +80,7 @@ public class FoodItem extends Model {
             valuesList.add(formatMilligrams(protein.intValue() * quantity.intValue()));
         }
 
-        new DetailsFrame(labelText, keysList.toArray(new String[0]), valuesList.toArray(new String[0]));
+        new DetailsDialog(labelText, keysList.toArray(new String[0]), valuesList.toArray(new String[0]));
     }
 
     public void getDetails(String labelText) {

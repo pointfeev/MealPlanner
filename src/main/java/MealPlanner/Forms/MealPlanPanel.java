@@ -32,7 +32,7 @@ public class MealPlanPanel extends Panel {
         weekLabel.setText("%s to %s".formatted(mealPlan.week_start, weekEnd));
         nameLabel.setText(mealPlan.name);
         editButton.addActionListener(event -> {
-            new MealPlanUpdateFrame(mealPlan);
+            new MealPlanUpdateDialog(mealPlan);
             Main.mainFrame.refresh();
         });
 
