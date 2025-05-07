@@ -10,4 +10,4 @@ To install and run on **Windows**, use `.\Run.bat`.
 
 To install and run on **Linux**, use `./Run.sh`.
 
-If you encounter build issues running the application, install the latest Temurin JDK LTS from https://adoptium.net/temurin/releases; this application was tested with Temurin JDK version 21.
+If you encounter any issues running the application, make sure you have installed the latest Temurin JDK LTS (see https://adoptium.net/installation); this application was tested with Temurin JDK version 21.
