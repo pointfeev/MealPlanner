@@ -96,13 +96,27 @@ public class RecipeUpdateDialog extends JDialog {
                 success = this.recipe.insert();
             } else {
                 for (RecipeIngredient ingredient : this.recipe.getIngredients()) {
-                    if (!ingredients.contains(ingredient)) {
+                    boolean shouldDelete = true;
+                    for (RecipeIngredient ingredientUpdated : ingredients) {
+                        if (ingredientUpdated.id != null && ingredientUpdated.id.intValue() == ingredient.id.intValue()) {
+                            shouldDelete = false;
+                            break;
+                        }
+                    }
+                    if (shouldDelete) {
                         ingredient.delete();
                     }
                 }
 
                 for (RecipeInstruction instruction : this.recipe.getInstructions()) {
-                    if (!instructions.contains(instruction)) {
+                    boolean shouldDelete = true;
+                    for (RecipeInstruction instructionUpdated : instructions) {
+                        if (instructionUpdated.id != null && instructionUpdated.id.intValue() == instruction.id.intValue()) {
+                            shouldDelete = false;
+                            break;
+                        }
+                    }
+                    if (shouldDelete) {
                         instruction.delete();
                     }
                 }
@@ -116,20 +130,22 @@ public class RecipeUpdateDialog extends JDialog {
             for (RecipeIngredient ingredient : ingredients) {
                 ingredient.recipe_id = this.recipe.id;
                 if (!ingredient.validate()) {
-                    return;
+                    success = false;
+                    continue;
                 }
 
                 if (ingredient.id == null) {
-                    success = success &&  ingredient.insert();
+                    success = success && ingredient.insert();
                 } else {
-                    success = success &&  ingredient.update();
+                    success = success && ingredient.update();
                 }
             }
 
             for (RecipeInstruction instruction : instructions) {
                 instruction.recipe_id = this.recipe.id;
                 if (!instruction.validate()) {
-                    return;
+                    success = false;
+                    continue;
                 }
 
                 if (instruction.id == null) {
@@ -139,6 +155,9 @@ public class RecipeUpdateDialog extends JDialog {
                 }
             }
 
+            if (!success) {
+                return;
+            }
             dispose();
         });
         actionPanel.add(saveButtonPanel.contentPane);

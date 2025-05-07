@@ -87,7 +87,14 @@ public class MealPlanUpdateDialog extends JDialog {
                 success = this.mealPlan.insert();
             } else {
                 for (Meal meal : this.mealPlan.getMeals()) {
-                    if (!meals.contains(meal)) {
+                    boolean shouldDelete = true;
+                    for (Meal mealUpdated : meals) {
+                        if (mealUpdated.id != null && mealUpdated.id.intValue() == meal.id.intValue()) {
+                            shouldDelete = false;
+                            break;
+                        }
+                    }
+                    if (shouldDelete) {
                         meal.delete();
                     }
                 }
@@ -101,19 +108,20 @@ public class MealPlanUpdateDialog extends JDialog {
             for (Meal meal : meals) {
                 meal.plan_id = this.mealPlan.id;
                 if (!meal.validate()) {
-                    return;
+                    success = false;
+                    continue;
                 }
 
                 if (meal.id == null) {
-                    success = meal.insert();
+                    success = success && meal.insert();
                 } else {
-                    success = meal.update();
-                }
-                if (!success) {
-                    return;
+                    success = success && meal.update();
                 }
             }
 
+            if (!success) {
+                return;
+            }
             dispose();
         });
         actionPanel.add(saveButtonPanel.contentPane);
