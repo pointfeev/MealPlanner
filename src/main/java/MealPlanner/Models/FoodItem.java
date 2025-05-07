@@ -1,10 +1,7 @@
 package MealPlanner.Models;
 
 import MealPlanner.GUI.Details.DetailsDialog;
-import MealPlanner.Models.Annotations.CheckString;
-import MealPlanner.Models.Annotations.Ignore;
-import MealPlanner.Models.Annotations.NotNull;
-import MealPlanner.Models.Annotations.PrimaryKey;
+import MealPlanner.Models.Annotations.*;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -15,9 +12,9 @@ public class FoodItem extends Model {
     @Ignore public static final String TABLE = "food_item";
 
     @PrimaryKey public Number id;
-    @NotNull public String name;
+    @NotNull @OrderBy("ASC") public String name;
     @CheckString({"fruit", "vegetable", "grains", "protein", "dairy"}) public String food_group;
-    @NotNull public String unit;
+    @NotNull @OrderBy("ASC") public String unit;
     public Number calories;
     public Number fat;
     public Number cholesterol;

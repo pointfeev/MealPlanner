@@ -2,6 +2,7 @@ package MealPlanner.Models;
 
 import MealPlanner.Models.Annotations.Ignore;
 import MealPlanner.Models.Annotations.NotNull;
+import MealPlanner.Models.Annotations.OrderBy;
 import MealPlanner.Models.Annotations.PrimaryKey;
 
 public class RecipeIngredient extends Model {
@@ -9,8 +10,8 @@ public class RecipeIngredient extends Model {
 
     @PrimaryKey public Number id;
     @NotNull public Number recipe_id;
-    @NotNull public Number food_id;
-    @NotNull public Number quantity;
+    @NotNull @OrderBy("ASC") public Number food_id;
+    @NotNull @OrderBy("DESC") public Number quantity;
 
     @Ignore private FoodItem foodItem;
 
