@@ -8,7 +8,8 @@ import MealPlanner.Models.Annotations.PrimaryKey;
 public class RecipeInstruction extends Model {
     @Ignore public static final String TABLE = "recipe_instruction";
 
-    @PrimaryKey @NotNull public Number recipe_id;
-    @PrimaryKey @NotNull @OrderBy("ASC") public Number step;
+    @PrimaryKey public Number id;
+    @NotNull public Number recipe_id;
+    @NotNull @OrderBy("ASC") public Number step;
     @NotNull public String instruction;
 }

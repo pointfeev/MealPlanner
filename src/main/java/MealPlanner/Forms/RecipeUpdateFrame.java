@@ -13,8 +13,6 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Locale;
 
-import static MealPlanner.Main.displayErrorDialog;
-
 public class RecipeUpdateFrame extends JDialog {
     public Recipe recipe;
 
@@ -85,19 +83,6 @@ public class RecipeUpdateFrame extends JDialog {
         contentPane.add(actionPanel);
 
         ButtonPanel saveButtonPanel = new ButtonPanel("Save", event -> {
-            for (RecipeInstruction instruction1 : instructions) {
-                for (RecipeInstruction instruction2 : instructions) {
-                    if (instruction1 == instruction2) {
-                        continue;
-                    }
-
-                    if (instruction1.step != null && instruction2.step != null && instruction1.step.intValue() == instruction2.step.intValue()) {
-                        displayErrorDialog("Instructions cannot have the same step number!");
-                        return;
-                    }
-                }
-            }
-
             if (!this.recipe.validate()) {
                 return;
             }
@@ -106,7 +91,11 @@ public class RecipeUpdateFrame extends JDialog {
             if (this.recipe.id == null) {
                 success = this.recipe.insert();
             } else {
-                // TODO: ingredients
+                for (RecipeIngredient ingredient : this.recipe.getIngredients()) {
+                    if (!ingredients.contains(ingredient)) {
+                        ingredient.delete();
+                    }
+                }
 
                 for (RecipeInstruction instruction : this.recipe.getInstructions()) {
                     if (!instructions.contains(instruction)) {
@@ -120,7 +109,21 @@ public class RecipeUpdateFrame extends JDialog {
                 return;
             }
 
-            // TODO: ingredients
+            for (RecipeIngredient ingredient : ingredients) {
+                ingredient.recipe_id = this.recipe.id;
+                if (!ingredient.validate()) {
+                    return;
+                }
+
+                if (ingredient.id == null) {
+                    success = ingredient.insert();
+                } else {
+                    success = ingredient.update();
+                }
+                if (!success) {
+                    return;
+                }
+            }
 
             for (RecipeInstruction instruction : instructions) {
                 instruction.recipe_id = this.recipe.id;
@@ -128,16 +131,10 @@ public class RecipeUpdateFrame extends JDialog {
                     return;
                 }
 
-                boolean exists = false;
-                for (RecipeInstruction existingInstruction : this.recipe.getInstructions()) {
-                    if (instruction == existingInstruction) {
-                        success = instruction.update();
-                        exists = true;
-                        break;
-                    }
-                }
-                if (!exists) {
+                if (instruction.id == null) {
                     success = instruction.insert();
+                } else {
+                    success = instruction.update();
                 }
                 if (!success) {
                     return;
@@ -150,7 +147,9 @@ public class RecipeUpdateFrame extends JDialog {
 
         if (recipe != null) {
             ButtonPanel deleteButtonPanel = new ButtonPanel("Delete", event -> {
-                int option = JOptionPane.showOptionDialog(this, "Are you sure you want to delete this recipe?" + "\n\nMeals associated with this recipe will also be deleted!", "Meal Planner - Delete Recipe", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, null, null);
+                int option = JOptionPane.showOptionDialog(this, "Are you sure you want to delete this recipe?" +
+                                "\n\nMeals associated with this recipe will also be deleted!", "Meal Planner - Delete Recipe",
+                        JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, null, null);
                 if (option != JOptionPane.YES_OPTION) {
                     return;
                 }
@@ -173,27 +172,58 @@ public class RecipeUpdateFrame extends JDialog {
     }
 
     private void addIngredient(RecipeIngredient ingredient) {
-        // TODO: if ingredient null
+        FoodItem foodItem;
+        if (ingredient == null) {
+            FoodItemSelectFrame foodItemSelectFrame = new FoodItemSelectFrame();
+            foodItem = foodItemSelectFrame.selectedFoodItem;
+            if (foodItem == null) {
+                return;
+            }
 
-        FoodItem foodItem = ingredient.getFoodItem();
+            ingredient = new RecipeIngredient();
+            ingredient.food_id = foodItem.id;
+            ingredient.recipe_id = recipe.id;
+        } else {
+            foodItem = ingredient.getFoodItem();
+        }
+        RecipeIngredient ingredientFinal = ingredient; // for lambdas
+        ingredients.add(ingredient);
 
         JPanel foodPanel = new JPanel();
         foodPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
         foodPanel.setAlignmentX(0.0f);
         ingredientsPanel.add(foodPanel);
 
-        InputPanel foodNameInputPanel = new InputPanel("Item", "%s of %s".formatted(foodItem.unit.substring(0, 1).toUpperCase() + foodItem.unit.substring(1).toLowerCase(), foodItem.name), 20, false);
+        InputPanel foodNameInputPanel = new InputPanel("Item", foodItem.toString(), 20, false);
         foodPanel.add(foodNameInputPanel.contentPane);
 
         ButtonPanel editButtonPanel = new ButtonPanel("Edit", event -> {
-            // TODO
+            FoodItemSelectFrame foodItemSelectFrame = new FoodItemSelectFrame();
+            FoodItem selectedFoodItem = foodItemSelectFrame.selectedFoodItem;
+            if (selectedFoodItem == null) {
+                return;
+            }
+
+            ingredientFinal.food_id = selectedFoodItem.id;
+            foodNameInputPanel.inputField.setText(selectedFoodItem.toString());
         });
         editButtonPanel.contentPane.remove(editButtonPanel.leftSeparator);
         foodPanel.add(editButtonPanel.contentPane);
 
-        InputPanel quantityInputPanel = new InputPanel("Quantity", ingredient.quantity.toString(), 5);
+        InputPanel quantityInputPanel = new InputPanel("Quantity", ingredient.quantity == null ? "" : ingredient.quantity.toString(), text -> {
+            Number parsedNumber;
+            try {
+                parsedNumber = Integer.parseInt(text);
+            } catch (NumberFormatException exception) {
+                ingredientFinal.quantity = null;
+                return;
+            }
+            ingredientFinal.quantity = parsedNumber;
+        }, 5);
 
         ButtonPanel deleteButtonPanel = new ButtonPanel("Delete", event -> {
+            ingredients.remove(ingredientFinal);
+
             ingredientsPanel.remove(foodPanel);
             ingredientsPanel.remove(quantityInputPanel.contentPane);
 
@@ -203,6 +233,8 @@ public class RecipeUpdateFrame extends JDialog {
         foodPanel.add(deleteButtonPanel.contentPane);
 
         ingredientsPanel.add(quantityInputPanel.contentPane);
+
+        pack();
     }
 
     private void addInstruction(RecipeInstruction instruction) {

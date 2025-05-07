@@ -108,11 +108,10 @@ public abstract class Model {
         }
 
         ArrayList<T> results = new ArrayList<>();
-        try (OraclePreparedStatement statement = DatabaseHelper.prepareStatement(
-                "SELECT * FROM %s%s%s".formatted(table,
-                        whereBuilder.isEmpty() ? "" : " WHERE %s".formatted(whereBuilder),
-                        orderByBuilder.isEmpty() ? "" : " ORDER BY %s".formatted(orderByBuilder)),
-                whereValues.toArray())) {
+        String sql = "SELECT * FROM %s%s%s".formatted(table,
+                whereBuilder.isEmpty() ? "" : " WHERE %s".formatted(whereBuilder),
+                orderByBuilder.isEmpty() ? "" : " ORDER BY %s".formatted(orderByBuilder));
+        try (OraclePreparedStatement statement = DatabaseHelper.prepareStatement(sql, whereValues.toArray())) {
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
                     try {
@@ -282,9 +281,8 @@ public abstract class Model {
             return false;
         }
 
-        try (OraclePreparedStatement statement = DatabaseHelper.prepareStatement(
-                "INSERT INTO %s (%s) VALUES (%s)".formatted(table, parametersBuilder.toString(), valuesBuilder.toString()),
-                returnColumns.toArray(new String[0]), parameterValues.toArray())) {
+        String sql = "INSERT INTO %s (%s) VALUES (%s)".formatted(table, parametersBuilder.toString(), valuesBuilder.toString());
+        try (OraclePreparedStatement statement = DatabaseHelper.prepareStatement(sql, returnColumns.toArray(new String[0]), parameterValues.toArray())) {
             if (statement.executeUpdate() == 0) {
                 displayErrorDialog("Failed to perform an insertion for %s!", modelName);
                 return false;
@@ -371,9 +369,8 @@ public abstract class Model {
             return false;
         }
 
-        try (OraclePreparedStatement statement = DatabaseHelper.prepareStatement(
-                "UPDATE %s SET %s WHERE %s".formatted(table, parametersBuilder.toString(), keysBuilder.toString()),
-                parameterKeysAndValuesList.toArray(), keyKeysAndValuesList.toArray())) {
+        String sql = "UPDATE %s SET %s WHERE %s".formatted(table, parametersBuilder.toString(), keysBuilder.toString());
+        try (OraclePreparedStatement statement = DatabaseHelper.prepareStatement(sql, parameterKeysAndValuesList.toArray(), keyKeysAndValuesList.toArray())) {
             if (statement.executeUpdate() == 0) {
                 displayErrorDialog("Failed to perform an update for %s!", modelName);
                 return false;
@@ -427,9 +424,8 @@ public abstract class Model {
             return false;
         }
 
-        try (OraclePreparedStatement statement = DatabaseHelper.prepareStatement(
-                "DELETE FROM %s WHERE %s".formatted(table, keysBuilder.toString()),
-                keyKeysAndValuesList.toArray())) {
+        String sql = "DELETE FROM %s WHERE %s".formatted(table, keysBuilder.toString());
+        try (OraclePreparedStatement statement = DatabaseHelper.prepareStatement(sql, keyKeysAndValuesList.toArray())) {
             if (statement.executeUpdate() == 0) {
                 displayErrorDialog("Failed to perform a deletion for %s!", modelName);
                 return false;

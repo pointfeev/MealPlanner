@@ -14,6 +14,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static MealPlanner.Main.displayErrorDialog;
 
 public class DatabaseHelper {
+    private static final boolean DEBUG = false; // print all prepared SQL statements
+
     private final static int LOGIN_TIMEOUT_SECONDS = 3;
 
     private static Connection connection = null;
@@ -132,6 +134,9 @@ public class DatabaseHelper {
      * @throws SQLException May be thrown be either {@link Connection#prepareStatement(String)} or {@link OraclePreparedStatement#setObject(int, Object)}
      */
     public static OraclePreparedStatement prepareStatement(String sql, String[] columnNames, Object... parameters) throws SQLException {
+        if (DEBUG) {
+            System.out.println(sql);
+        }
         OraclePreparedStatement statement;
         if (columnNames == null || columnNames.length == 0) {
             statement = (OraclePreparedStatement) connection.prepareStatement(sql);

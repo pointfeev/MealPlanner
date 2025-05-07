@@ -7,8 +7,9 @@ import MealPlanner.Models.Annotations.PrimaryKey;
 public class RecipeIngredient extends Model {
     @Ignore public static final String TABLE = "recipe_ingredient";
 
-    @PrimaryKey @NotNull public Number recipe_id;
-    @PrimaryKey @NotNull public Number food_id;
+    @PrimaryKey public Number id;
+    @NotNull public Number recipe_id;
+    @NotNull public Number food_id;
     @NotNull public Number quantity;
 
     @Ignore private FoodItem foodItem;

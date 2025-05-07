@@ -32,4 +32,9 @@ public class FoodItem extends Model {
         }
         return String.format("%d %s", value, value == 1 ? "milligram" : "milligrams");
     }
+
+    @Override
+    public String toString() {
+        return "%s of %s".formatted(unit.substring(0, 1).toUpperCase() + unit.substring(1).toLowerCase(), name);
+    }
 }
