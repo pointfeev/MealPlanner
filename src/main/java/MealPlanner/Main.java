@@ -42,7 +42,7 @@ public class Main {
         }).start();
 
         dialog.setVisible(true);
-        if (!success.get() && dialogPane.getValue() != null) {
+        if (!success.get() || dialogPane.getValue() != JOptionPane.UNINITIALIZED_VALUE) {
             System.exit(0);
         }
     }

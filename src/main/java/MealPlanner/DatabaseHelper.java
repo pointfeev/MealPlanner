@@ -96,12 +96,10 @@ public class DatabaseHelper {
 
                 for (String sql : new String(stream.readAllBytes()).split("/")) {
                     sql = sql.trim();
-                    try {
-                        try (OraclePreparedStatement statement = prepareStatement(sql)) {
-                            statement.executeUpdate();
-                        }
+                    try (OraclePreparedStatement statement = prepareStatement(sql)) {
+                        statement.executeUpdate();
                     } catch (SQLException exception) {
-                        displayErrorDialog("Encountered an error while setting up the database!\n\n%s\n\n%s", sql, exception.getMessage());
+                        displayErrorDialog("Encountered an error while setting up the database!\n\n%s\n\n%s", sql, exception);
                         return false;
                     }
                 }
