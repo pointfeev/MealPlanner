@@ -120,12 +120,9 @@ public class RecipeUpdateDialog extends JDialog {
                 }
 
                 if (ingredient.id == null) {
-                    success = ingredient.insert();
+                    success = success &&  ingredient.insert();
                 } else {
-                    success = ingredient.update();
-                }
-                if (!success) {
-                    return;
+                    success = success &&  ingredient.update();
                 }
             }
 
@@ -136,12 +133,9 @@ public class RecipeUpdateDialog extends JDialog {
                 }
 
                 if (instruction.id == null) {
-                    success = instruction.insert();
+                    success = success && instruction.insert();
                 } else {
-                    success = instruction.update();
-                }
-                if (!success) {
-                    return;
+                    success = success && instruction.update();
                 }
             }
 
