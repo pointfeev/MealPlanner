@@ -4,6 +4,7 @@ import MealPlanner.Forms.MainFrame;
 import com.formdev.flatlaf.FlatLightLaf;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -37,13 +38,28 @@ public class Main {
             }
 
             success.set(true);
-            dialog.dispose();
+            dialog.setVisible(false);
         }).start();
 
         dialog.setVisible(true);
         if (!success.get() && dialogPane.getValue() != null) {
             System.exit(0);
         }
+    }
+
+    public static Window getCurrentWindow() {
+        Window[] windows = Window.getWindows();
+        for (Window window : windows) {
+            if (window.isActive()) {
+                return window;
+            }
+        }
+        for (Window window : windows) {
+            if (window.isVisible()) {
+                return window;
+            }
+        }
+        return mainFrame;
     }
 
     /**
@@ -91,18 +107,15 @@ public class Main {
                 dialogPane.setOptions(options);
             }
             dialog.pack();
+
+            if (!dialog.isVisible()) {
+                dialog.setLocationRelativeTo(getCurrentWindow());
+            }
             return;
         }
 
         dialogPane = new JOptionPane(message.formatted(parameters), type, JOptionPane.DEFAULT_OPTION, null, options, null);
-        dialog = dialogPane.createDialog(mainFrame, title);
-        dialog.pack();
-        if (mainFrame == null) {
-            dialog.setLocationByPlatform(true);
-        } else {
-            dialog.setLocationRelativeTo(mainFrame);
-            // TODO: figure out why the dialog isn't going into the middle of the main frame
-        }
+        dialog = dialogPane.createDialog(getCurrentWindow(), title);
     }
 
     /**
