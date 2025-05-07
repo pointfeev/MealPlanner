@@ -37,12 +37,12 @@ public class FoodItemUpdateDialog extends JDialog {
         contentPane.add(new InputPanel("Calories", this.foodItem.calories == null ? "0" : this.foodItem.calories.toString(), text -> {
             Number parsedNumber;
             try {
-                parsedNumber = Double.parseDouble(text);
+                parsedNumber = Integer.parseInt(text);
             } catch (NumberFormatException exception) {
                 this.foodItem.calories = null;
                 return;
             }
-            if (parsedNumber.doubleValue() == 0) {
+            if (parsedNumber.intValue() == 0) {
                 this.foodItem.calories = null;
                 return;
             }
@@ -51,12 +51,12 @@ public class FoodItemUpdateDialog extends JDialog {
         contentPane.add(new InputPanel("Fat", "milligrams", this.foodItem.fat == null ? "0" : this.foodItem.fat.toString(), text -> {
             Number parsedNumber;
             try {
-                parsedNumber = Double.parseDouble(text);
+                parsedNumber = Integer.parseInt(text);
             } catch (NumberFormatException exception) {
                 this.foodItem.fat = null;
                 return;
             }
-            if (parsedNumber.doubleValue() == 0) {
+            if (parsedNumber.intValue() == 0) {
                 this.foodItem.fat = null;
                 return;
             }
@@ -65,12 +65,12 @@ public class FoodItemUpdateDialog extends JDialog {
         contentPane.add(new InputPanel("Cholesterol", "milligrams", this.foodItem.cholesterol == null ? "0" : this.foodItem.cholesterol.toString(), text -> {
             Number parsedNumber;
             try {
-                parsedNumber = Double.parseDouble(text);
+                parsedNumber = Integer.parseInt(text);
             } catch (NumberFormatException exception) {
                 this.foodItem.cholesterol = null;
                 return;
             }
-            if (parsedNumber.doubleValue() == 0) {
+            if (parsedNumber.intValue() == 0) {
                 this.foodItem.cholesterol = null;
                 return;
             }
@@ -79,12 +79,12 @@ public class FoodItemUpdateDialog extends JDialog {
         contentPane.add(new InputPanel("Sodium", "milligrams", this.foodItem.sodium == null ? "0" : this.foodItem.sodium.toString(), text -> {
             Number parsedNumber;
             try {
-                parsedNumber = Double.parseDouble(text);
+                parsedNumber = Integer.parseInt(text);
             } catch (NumberFormatException exception) {
                 this.foodItem.sodium = null;
                 return;
             }
-            if (parsedNumber.doubleValue() == 0) {
+            if (parsedNumber.intValue() == 0) {
                 this.foodItem.sodium = null;
                 return;
             }
@@ -93,12 +93,12 @@ public class FoodItemUpdateDialog extends JDialog {
         contentPane.add(new InputPanel("Carbohydrates", "milligrams", this.foodItem.carbohydrates == null ? "0" : this.foodItem.carbohydrates.toString(), text -> {
             Number parsedNumber;
             try {
-                parsedNumber = Double.parseDouble(text);
+                parsedNumber = Integer.parseInt(text);
             } catch (NumberFormatException exception) {
                 this.foodItem.carbohydrates = null;
                 return;
             }
-            if (parsedNumber.doubleValue() == 0) {
+            if (parsedNumber.intValue() == 0) {
                 this.foodItem.carbohydrates = null;
                 return;
             }
@@ -107,12 +107,12 @@ public class FoodItemUpdateDialog extends JDialog {
         contentPane.add(new InputPanel("Dietary Fiber", "milligrams", this.foodItem.dietary_fiber == null ? "0" : this.foodItem.dietary_fiber.toString(), text -> {
             Number parsedNumber;
             try {
-                parsedNumber = Double.parseDouble(text);
+                parsedNumber = Integer.parseInt(text);
             } catch (NumberFormatException exception) {
                 this.foodItem.dietary_fiber = null;
                 return;
             }
-            if (parsedNumber.doubleValue() == 0) {
+            if (parsedNumber.intValue() == 0) {
                 this.foodItem.dietary_fiber = null;
                 return;
             }
@@ -121,12 +121,12 @@ public class FoodItemUpdateDialog extends JDialog {
         contentPane.add(new InputPanel("Sugars", "milligrams", this.foodItem.sugars == null ? "0" : this.foodItem.sugars.toString(), text -> {
             Number parsedNumber;
             try {
-                parsedNumber = Double.parseDouble(text);
+                parsedNumber = Integer.parseInt(text);
             } catch (NumberFormatException exception) {
                 this.foodItem.sugars = null;
                 return;
             }
-            if (parsedNumber.doubleValue() == 0) {
+            if (parsedNumber.intValue() == 0) {
                 this.foodItem.sugars = null;
                 return;
             }
@@ -135,12 +135,12 @@ public class FoodItemUpdateDialog extends JDialog {
         contentPane.add(new InputPanel("Protein", "milligrams", this.foodItem.protein == null ? "0" : this.foodItem.protein.toString(), text -> {
             Number parsedNumber;
             try {
-                parsedNumber = Double.parseDouble(text);
+                parsedNumber = Integer.parseInt(text);
             } catch (NumberFormatException exception) {
                 this.foodItem.protein = null;
                 return;
             }
-            if (parsedNumber.doubleValue() == 0) {
+            if (parsedNumber.intValue() == 0) {
                 this.foodItem.protein = null;
                 return;
             }
