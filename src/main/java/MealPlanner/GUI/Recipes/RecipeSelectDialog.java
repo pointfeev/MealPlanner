@@ -33,6 +33,7 @@ public class RecipeSelectDialog extends JDialog {
         } else {
             label.setText("Select a recipe...");
 
+            // TODO: make this a scroll pane and add a search bar?
             for (Recipe recipe : recipes) {
                 contentPane.add(new RecipeSelectPanel(recipe.name, event -> {
                     selectedRecipe = recipe;

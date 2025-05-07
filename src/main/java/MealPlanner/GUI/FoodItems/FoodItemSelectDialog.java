@@ -28,6 +28,7 @@ public class FoodItemSelectDialog extends JDialog {
         contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
         contentPane.add(topPane);
 
+        // TODO: make this a scroll pane and add a search bar?
         foodPane = new JPanel();
         foodPane.setLayout(new BoxLayout(foodPane, BoxLayout.Y_AXIS));
         contentPane.add(foodPane);
