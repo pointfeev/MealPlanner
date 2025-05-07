@@ -206,12 +206,19 @@ public class RecipeUpdateDialog extends JDialog {
     private void updateIngredientItemInputs() {
         for (InputPanel itemInputPanel : itemInputPanels) {
             RecipeIngredient ingredient = (RecipeIngredient) itemInputPanel.contentPane.getClientProperty("ingredient");
-            if (ingredient == null) {
+            if (ingredient == null || ingredient.food_id == null) {
                 continue;
             }
 
             ingredient.clearCache();
-            FoodItem updatedFoodItem = ingredient.getFoodItem();
+            FoodItem updatedFoodItem;
+            try {
+                updatedFoodItem = ingredient.getFoodItem();
+            } catch (RuntimeException exception) {
+                ingredient.food_id = null;
+                itemInputPanel.inputField.setText("");
+                return;
+            }
             itemInputPanel.inputField.setText(updatedFoodItem.toString());
         }
     }
@@ -243,8 +250,6 @@ public class RecipeUpdateDialog extends JDialog {
         ingredientsPanel.add(foodPanel);
 
         InputPanel foodNameInputPanel = new InputPanel("Item", foodItem.toString(), 20, false);
-        foodNameInputPanel.contentPane.putClientProperty("ingredient", ingredient);
-        itemInputPanels.add(foodNameInputPanel);
         foodPanel.add(foodNameInputPanel.contentPane);
 
         ButtonPanel editButtonPanel = new ButtonPanel("Edit", event -> {
@@ -277,12 +282,13 @@ public class RecipeUpdateDialog extends JDialog {
 
         ButtonPanel deleteButtonPanel = new ButtonPanel("Delete", event -> {
             ingredients.remove(ingredientFinal);
-            itemInputPanels.remove(foodNameInputPanel);
 
             ingredientsPanel.remove(foodPanel);
             ingredientsPanel.remove(quantityInputPanel.contentPane);
 
             pack();
+
+            itemInputPanels.remove(foodNameInputPanel);
         });
         deleteButtonPanel.contentPane.remove(deleteButtonPanel.leftSeparator);
         foodPanel.add(deleteButtonPanel.contentPane);
@@ -290,6 +296,9 @@ public class RecipeUpdateDialog extends JDialog {
         ingredientsPanel.add(quantityInputPanel.contentPane);
 
         pack();
+
+        foodNameInputPanel.contentPane.putClientProperty("ingredient", ingredient);
+        itemInputPanels.add(foodNameInputPanel);
     }
 
     private void addInstruction(RecipeInstruction instruction) {
