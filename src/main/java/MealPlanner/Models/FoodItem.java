@@ -6,8 +6,10 @@ import MealPlanner.Models.Annotations.Ignore;
 import MealPlanner.Models.Annotations.NotNull;
 import MealPlanner.Models.Annotations.PrimaryKey;
 
-import java.text.DecimalFormat;
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class FoodItem extends Model {
     @Ignore public static final String TABLE = "food_item";
@@ -27,12 +29,12 @@ public class FoodItem extends Model {
 
     public static String formatMilligrams(int value) {
         if (value >= 1000) {
-            DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
             double grams = value / 1000.0;
-            String formattedGrams = decimalFormat.format(grams).replaceAll("\\.?0*$", "");
-            return String.format("%s %s", formattedGrams, grams == 1 ? "gram" : "grams");
+            BigDecimal bigDecimal = new BigDecimal(Double.toString(grams));
+            String formattedGrams = bigDecimal.stripTrailingZeros().toPlainString();
+            return "%s %s".formatted(formattedGrams, grams == 1 ? "gram" : "grams");
         }
-        return String.format("%d %s", value, value == 1 ? "milligram" : "milligrams");
+        return "%d %s".formatted(value, value == 1 ? "milligram" : "milligrams");
     }
 
     public void getDetails(String labelText, Number quantity) {
@@ -91,12 +93,27 @@ public class FoodItem extends Model {
         getDetails(toString());
     }
 
-    public String formatQuantity(int quantity) {
-        return "%s %s(s) of %s".formatted(quantity, unit, name);
+    private String capitalize(String string) {
+        return Stream.of(string.trim().split("\\s"))
+                .filter(word -> !word.isEmpty())
+                .map(word -> word.substring(0, 1).toUpperCase() + word.substring(1))
+                .collect(Collectors.joining(" "));
+    }
+
+    public String getFormattedName() {
+        return capitalize(name);
+    }
+
+    public String getFormattedUnit() {
+        return capitalize(unit);
+    }
+
+    public String getFormattedQuantity(int quantity) {
+        return "%s %s(s) of %s".formatted(quantity, unit.toLowerCase(), getFormattedName());
     }
 
     @Override
     public String toString() {
-        return "%s of %s".formatted(unit.substring(0, 1).toUpperCase() + unit.substring(1).toLowerCase(), name);
+        return "%s of %s".formatted(getFormattedUnit(), getFormattedName());
     }
 }

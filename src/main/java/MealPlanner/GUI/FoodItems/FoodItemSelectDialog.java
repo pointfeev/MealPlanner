@@ -39,7 +39,7 @@ public class FoodItemSelectDialog extends JDialog {
         contentPane.add(actionPanel);
 
         ButtonPanel newItemButtonPanel = new ButtonPanel("New Item", event -> {
-            // TODO
+            new FoodItemUpdateDialog(null);
             populate();
         });
         actionPanel.add(newItemButtonPanel.contentPane);
@@ -72,7 +72,7 @@ public class FoodItemSelectDialog extends JDialog {
                     selectedFoodItem = foodItem;
                     dispose();
                 }, event -> {
-                    // TODO: onEdit
+                    new FoodItemUpdateDialog(foodItem);
                     populate();
                 }).contentPane);
             }

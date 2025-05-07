@@ -165,7 +165,7 @@ public class MealPlanUpdateDialog extends JDialog {
         recipePanel.setAlignmentX(0.0f);
         mealsPanel.add(recipePanel);
 
-        InputPanel foodNameInputPanel = new InputPanel("Recipe", recipe.name, null, 20, false);
+        InputPanel foodNameInputPanel = new InputPanel("Recipe", recipe.name, 20, false);
         recipePanel.add(foodNameInputPanel.contentPane);
 
         ButtonPanel editButtonPanel = new ButtonPanel("Edit", event -> {

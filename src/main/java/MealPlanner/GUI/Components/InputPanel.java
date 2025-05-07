@@ -11,11 +11,14 @@ public class InputPanel extends Panel {
     public JPanel contentPane;
     public JLabel keyLabel;
     public JTextField inputField;
+    public JSeparator unitSeparator;
+    public JLabel unitLabel;
 
-    public InputPanel(String key, String value, Consumer<String> onChange, int columns, boolean enabled) {
+    public InputPanel(String key, String unit, String value, Consumer<String> onChange, int columns, boolean enabled) {
         $$$setupUI$$$();
 
         keyLabel.setText(key);
+
         inputField.setText(value);
         if (onChange != null) {
             inputField.addCaretListener(event -> onChange.accept(inputField.getText()));
@@ -23,11 +26,22 @@ public class InputPanel extends Panel {
         inputField.setColumns(columns);
         inputField.setEnabled(enabled);
 
+        if (unit == null) {
+            unitSeparator.setVisible(false);
+            unitLabel.setVisible(false);
+        } else {
+            unitLabel.setText(unit);
+        }
+
         updateSize(contentPane);
     }
 
+    public InputPanel(String key, String unit, String value, Consumer<String> onChange, int columns) {
+        this(key, unit, value, onChange, columns, true);
+    }
+
     public InputPanel(String key, String value, Consumer<String> onChange, int columns) {
-        this(key, value, onChange, columns, true);
+        this(key, null, value, onChange, columns, true);
     }
 
     public InputPanel(String key, String value, Consumer<String> onChange) {
@@ -35,15 +49,7 @@ public class InputPanel extends Panel {
     }
 
     public InputPanel(String key, String value, int columns, boolean enabled) {
-        this(key, value, null, columns, enabled);
-    }
-
-    public InputPanel(String key, String value, int columns) {
-        this(key, value, null, columns);
-    }
-
-    public InputPanel(String key, String value) {
-        this(key, value, null);
+        this(key, null, value, null, columns, enabled);
     }
 
     /**
@@ -69,8 +75,16 @@ public class InputPanel extends Panel {
         separator2.setPreferredSize(new Dimension(20, 0));
         contentPane.add(separator2);
         inputField = new JTextField();
-        inputField.setColumns(30);
+        inputField.setColumns(10);
         contentPane.add(inputField);
+        unitSeparator = new JSeparator();
+        unitSeparator.setPreferredSize(new Dimension(5, 0));
+        contentPane.add(unitSeparator);
+        unitLabel = new JLabel();
+        Font unitLabelFont = this.$$$getFont$$$(null, -1, -1, unitLabel.getFont());
+        if (unitLabelFont != null) unitLabel.setFont(unitLabelFont);
+        unitLabel.setText("Label");
+        contentPane.add(unitLabel);
         final JSeparator separator3 = new JSeparator();
         separator3.setPreferredSize(new Dimension(10, 0));
         contentPane.add(separator3);

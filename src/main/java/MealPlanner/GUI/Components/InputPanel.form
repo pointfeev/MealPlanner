@@ -31,10 +31,23 @@
       <component id="33803" class="javax.swing.JTextField" binding="inputField">
         <constraints/>
         <properties>
-          <columns value="30"/>
+          <columns value="10"/>
         </properties>
       </component>
-      <component id="37086" class="javax.swing.JSeparator">
+      <component id="37086" class="javax.swing.JSeparator" binding="unitSeparator">
+        <constraints/>
+        <properties>
+          <preferredSize width="5" height="0"/>
+        </properties>
+      </component>
+      <component id="7f0de" class="javax.swing.JLabel" binding="unitLabel">
+        <constraints/>
+        <properties>
+          <font/>
+          <text value="Label"/>
+        </properties>
+      </component>
+      <component id="5082b" class="javax.swing.JSeparator">
         <constraints/>
         <properties>
           <preferredSize width="10" height="0"/>
