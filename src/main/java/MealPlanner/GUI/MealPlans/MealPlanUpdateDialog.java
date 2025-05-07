@@ -42,6 +42,7 @@ public class MealPlanUpdateDialog extends JDialog {
         this.mealPlan = mealPlan == null ? new MealPlan() : mealPlan;
 
         contentPane.add(new InputPanel("Name", this.mealPlan.name == null ? "" : this.mealPlan.name, text -> this.mealPlan.name = text).contentPane);
+        // TODO: improve the parsing of dates here or introduce some sort of picker
         contentPane.add(new InputPanel("Week Start", this.mealPlan.week_start == null ? "" : this.mealPlan.week_start.toString(), text -> {
             Date parsedDate;
             try {
@@ -51,7 +52,7 @@ public class MealPlanUpdateDialog extends JDialog {
                 return;
             }
             this.mealPlan.week_start = parsedDate;
-        }).contentPane);
+        }, 10).contentPane);
 
         JSeparator mealsSeparator = new JSeparator();
         mealsSeparator.setMaximumSize(new Dimension(0, 5));

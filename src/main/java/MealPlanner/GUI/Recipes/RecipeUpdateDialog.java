@@ -44,7 +44,7 @@ public class RecipeUpdateDialog extends JDialog {
         this.recipe = recipe == null ? new Recipe() : recipe;
 
         contentPane.add(new InputPanel("Name", this.recipe.name == null ? "" : this.recipe.name, text -> this.recipe.name = text).contentPane);
-        contentPane.add(new InputPanel("Category", this.recipe.name == null ? "" : this.recipe.category, text -> this.recipe.category = text).contentPane);
+        contentPane.add(new InputPanel("Category", this.recipe.name == null ? "" : this.recipe.category, text -> this.recipe.category = text, 20).contentPane);
 
         JSeparator ingredientSeparator = new JSeparator();
         ingredientSeparator.setMaximumSize(new Dimension(0, 5));
