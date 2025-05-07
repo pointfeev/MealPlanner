@@ -81,6 +81,17 @@ public class MealPlanUpdateDialog extends JDialog {
             if (!this.mealPlan.validate()) {
                 return;
             }
+            for (Meal meal : meals) {
+                Number oldId = meal.plan_id;
+                meal.plan_id = 1; // so validation skips plan_id
+                try {
+                    if (!meal.validate()) {
+                        return;
+                    }
+                } finally {
+                    meal.plan_id = oldId;
+                }
+            }
 
             boolean success;
             if (this.mealPlan.id == null) {
@@ -107,11 +118,6 @@ public class MealPlanUpdateDialog extends JDialog {
 
             for (Meal meal : meals) {
                 meal.plan_id = this.mealPlan.id;
-                if (!meal.validate()) {
-                    success = false;
-                    continue;
-                }
-
                 if (meal.id == null) {
                     success = success && meal.insert();
                 } else {
@@ -121,6 +127,10 @@ public class MealPlanUpdateDialog extends JDialog {
 
             if (!success) {
                 return;
+            }
+            Date today = new Date(System.currentTimeMillis());
+            if (this.mealPlan.week_start.before(today) && !Main.mainFrame.mealPlanShowPastCheckBox.isSelected()) {
+                Main.mainFrame.mealPlanShowPastCheckBox.doClick();
             }
             dispose();
         });

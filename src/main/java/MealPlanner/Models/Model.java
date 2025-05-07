@@ -49,15 +49,21 @@ public abstract class Model {
     }
 
     /**
-     * Selects and retrieves an array of objects from the associated database table based on the field values of the current instance.
+     * Executes a database SELECT operation for the current model instance by dynamically
+     * constructing a query based on the fields of the associated model class. Fields marked
+     * with {@link Ignore} are excluded. Optionally, fields annotated with {@link OrderBy} are
+     * used for ordering the results.
      * <p>
-     * The method constructs a "WHERE" clause dynamically by evaluating the non-null fields of the current instance.
-     * If no fields are non-null, all records in the table are returned.
+     * Reflection is used to populate the query's WHERE and ORDER BY clauses dynamically based
+     * on the fields' values and annotations. Results are mapped back to model objects of the
+     * associated type.
      * <p>
-     * The retrieved records are mapped to instances of the associated model class, with fields populated from the database.
+     * In case of reflection-related errors, SQL exceptions, or instantiation failures,
+     * appropriate error dialogs are displayed, and the method will return {@code null}.
      *
-     * @param <T> The type of the model extending {@code Model}.
-     * @return An array of objects of type {@code T}, representing the retrieved records, or {@code null} if an error occurs.
+     * @param <T> the type of the model extending {@link Model}
+     * @return an array of objects of type {@code T} representing the query result, or {@code null}
+     * if an error occurs during the process.
      */
     @SuppressWarnings("unchecked")
     public <T extends Model> T[] select() {
@@ -148,23 +154,24 @@ public abstract class Model {
     }
 
     /**
-     * Validates the current instance by checking field values against the associated constraints
-     * provided through annotations such as {@link NotNull}, {@link CheckString}, and {@link CheckNumber}.
+     * Validates the current instance of the model by checking its fields against
+     * specified constraints, such as annotations {@code @NotNull}, {@code @CheckString},
+     * and {@code @CheckNumber}.
      * <p>
-     * The validation process includes:
+     * The method dynamically evaluates fields using reflection and applies the
+     * following validation criteria:
+     * - Fields annotated with {@code @NotNull} must not be null or blank.
+     * - Fields annotated with {@code @CheckString} must match one of the allowed values.
+     * - Fields annotated with {@code @CheckNumber} must fall within the specified range.
+     * - Fields annotated with {@code @Ignore} are skipped during validation.
      * <p>
-     * - Ensuring required fields (annotated with {@link NotNull}) are not null.
-     * <p>
-     * - Checking string values against allowed values (annotated with {@link CheckString}).
-     * <p>
-     * - Validating numeric values fall within a specified range (annotated with {@link CheckNumber}).
-     * <p>
-     * - Skipping fields annotated with {@link Ignore}.
-     * <p>
-     * If any validation fails, the method returns {@code false}.
-     * If an {@link IllegalAccessException} arises during reflection, an error dialog is displayed.
+     * If a validation failure occurs, an error dialog is displayed with the
+     * corresponding message, and the method returns {@code false}. If an
+     * {@code IllegalAccessException} occurs during reflection, an error dialog
+     * is also displayed, but the method may still return {@code true} unless
+     * validation criteria are not met.
      *
-     * @return {@code true} if all validations pass; otherwise, {@code false}.
+     * @return {@code true} if all validation criteria are met; {@code false} otherwise.
      */
     public boolean validate() {
         if (!populateReflectionData()) {
@@ -219,22 +226,25 @@ public abstract class Model {
             }
         } catch (IllegalAccessException exception) {
             displayErrorDialog("Encountered an error while performing validation for %s!\n\n%s".formatted(modelName, exception));
+            return false;
         }
         return true;
     }
 
     /**
-     * Inserts the current object into the associated database table
+     * Inserts the current instance of the model into the associated database table by dynamically
+     * constructing an SQL INSERT statement using reflection. Fields annotated with {@link Ignore}
+     * are skipped during insertion. Fields annotated with {@link PrimaryKey} are included
+     * conditionally, depending on whether their values are provided.
      * <p>
-     * The method dynamically constructs an SQL INSERT statement by examining the fields
-     * of the current instance. Fields annotated with {@link Ignore} are excluded from
-     * the insertion, and fields annotated with {@link PrimaryKey} are auto-generated if
-     * their value is null. Reflection is used to gather field data, and generated keys
-     * returned from the database are assigned back to the object.
+     * If the insertion is successful, any auto-generated keys are retrieved and populated
+     * back into the respective fields of the model instance.
      * <p>
-     * If any step in the process fails, an error message is displayed, and the method returns {@code false}
+     * Reflection errors, SQL-related exceptions, or missing required fields will result in an
+     * error message being displayed, and the method will return {@code false}.
      *
-     * @return {@code true} if the object was successfully inserted into the database, otherwise {@code false}
+     * @return {@code true} if the model was successfully inserted into the database;
+     * {@code false} otherwise.
      */
     public boolean insert() {
         if (!populateReflectionData()) {
@@ -311,16 +321,15 @@ public abstract class Model {
     }
 
     /**
-     * Updates the current object in the associated database table
+     * Updates the current instance of the model in the associated database table by dynamically constructing
+     * an SQL UPDATE statement using reflection. Fields annotated with {@link Ignore} are skipped during the update.
+     * Primary key fields, annotated with {@link PrimaryKey}, are used in the WHERE clause to identify the target row(s).
      * <p>
-     * The method dynamically constructs an SQL UPDATE statement using reflection to identify
-     * the fields and their values. Fields marked with the {@link Ignore} annotation are skipped,
-     * while fields annotated with {@link PrimaryKey} are used in the WHERE clause. Other fields
-     * are used in the SET clause.
-     * <p>
-     * If any step in the process fails, an error message will be displayed, and the method returns {@code false}
+     * The method dynamically evaluates fields of the model class to populate the SET clause of the update query.
+     * A failure in constructing the query, missing primary key(s), or database-related exceptions will result in
+     * an error message being displayed, and the method returning {@code false}.
      *
-     * @return {@code true} if the object was successfully updated in the database, otherwise {@code false}
+     * @return {@code true} if the model was successfully updated in the database; {@code false} otherwise.
      */
     public boolean update() {
         if (!populateReflectionData()) {
@@ -358,6 +367,7 @@ public abstract class Model {
             }
         } catch (IllegalAccessException exception) {
             displayErrorDialog("Encountered an error while gathering update parameters for %s!\n\n%s", modelName, exception);
+            return false;
         }
 
         if (parametersBuilder.isEmpty()) {
@@ -383,15 +393,16 @@ public abstract class Model {
     }
 
     /**
-     * Deletes the current object from the associated database table
+     * Deletes the current model instance from the associated database table.
+     * This method uses reflection to identify fields annotated with {@link PrimaryKey},
+     * which are used to construct the WHERE clause of the SQL DELETE statement.
      * <p>
-     * The method dynamically builds an SQL DELETE statement using reflection to identify
-     * primary key fields of the current instance. Fields annotated with {@link PrimaryKey}
-     * are included in the WHERE clause of the deletion query.
-     * <p>
-     * If any step in the process fails, an error message will be displayed, and the method returns {@code false}
+     * The deletion is performed only if the primary key field(s) are properly defined
+     * and the required data can be gathered through reflection. Any database-related
+     * errors or reflection-related issues will result in an error message being displayed,
+     * and the deletion will not be executed.
      *
-     * @return {@code true} if the object was successfully deleted from the database, otherwise {@code false}
+     * @return {@code true} if the deletion was successful; {@code false} otherwise.
      */
     public boolean delete() {
         if (!populateReflectionData()) {
@@ -417,6 +428,7 @@ public abstract class Model {
             }
         } catch (IllegalAccessException exception) {
             displayErrorDialog("Encountered an error while gathering deletion parameters for %s!\n\n%s", modelName, exception);
+            return false;
         }
 
         if (keysBuilder.isEmpty()) {

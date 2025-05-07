@@ -90,6 +90,28 @@ public class RecipeUpdateDialog extends JDialog {
             if (!this.recipe.validate()) {
                 return;
             }
+            for (RecipeIngredient ingredient : ingredients) {
+                Number oldId = ingredient.recipe_id;
+                ingredient.recipe_id = 1; // so validation skips recipe_id
+                try {
+                    if (!ingredient.validate()) {
+                        return;
+                    }
+                } finally {
+                    ingredient.recipe_id = oldId;
+                }
+            }
+            for (RecipeInstruction instruction : instructions) {
+                Number oldId = instruction.recipe_id;
+                instruction.recipe_id = 1; // so validation skips recipe_id
+                try {
+                    if (!instruction.validate()) {
+                        return;
+                    }
+                } finally {
+                    instruction.recipe_id = oldId;
+                }
+            }
 
             boolean success;
             if (this.recipe.id == null) {
@@ -129,11 +151,6 @@ public class RecipeUpdateDialog extends JDialog {
 
             for (RecipeIngredient ingredient : ingredients) {
                 ingredient.recipe_id = this.recipe.id;
-                if (!ingredient.validate()) {
-                    success = false;
-                    continue;
-                }
-
                 if (ingredient.id == null) {
                     success = success && ingredient.insert();
                 } else {
@@ -143,11 +160,6 @@ public class RecipeUpdateDialog extends JDialog {
 
             for (RecipeInstruction instruction : instructions) {
                 instruction.recipe_id = this.recipe.id;
-                if (!instruction.validate()) {
-                    success = false;
-                    continue;
-                }
-
                 if (instruction.id == null) {
                     success = success && instruction.insert();
                 } else {

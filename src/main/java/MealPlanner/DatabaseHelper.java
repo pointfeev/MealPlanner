@@ -14,7 +14,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static MealPlanner.Main.displayErrorDialog;
 
 public class DatabaseHelper {
-    private static final boolean DEBUG = false; // print all prepared SQL statements
+    private static final boolean DEBUG = true; // print all prepared SQL statements
 
     private final static int LOGIN_TIMEOUT_SECONDS = 3;
 
