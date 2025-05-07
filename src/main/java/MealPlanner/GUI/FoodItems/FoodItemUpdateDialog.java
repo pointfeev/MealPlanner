@@ -183,7 +183,6 @@ public class FoodItemUpdateDialog extends JDialog {
                 foodItem.delete();
 
                 dispose();
-                // TODO: fix delete not clearing recipe ingredient nor fridge item ids (cascade delete removes them)
             });
             actionPanel.add(deleteButtonPanel.contentPane);
         }
