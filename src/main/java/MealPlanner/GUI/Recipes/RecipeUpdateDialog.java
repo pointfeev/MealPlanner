@@ -283,10 +283,6 @@ public class RecipeUpdateDialog extends JDialog {
                 ingredientFinal.quantity = null;
                 return;
             }
-            if (parsedNumber.doubleValue() == 0) {
-                ingredientFinal.quantity = null;
-                return;
-            }
             ingredientFinal.quantity = parsedNumber;
         }, 5);
 

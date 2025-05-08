@@ -80,10 +80,6 @@ public class FridgeItemUpdateDialog extends JDialog {
                 this.fridgeItem.quantity = null;
                 return;
             }
-            if (parsedNumber.doubleValue() == 0) {
-                this.fridgeItem.quantity = null;
-                return;
-            }
             this.fridgeItem.quantity = parsedNumber;
         }, 5).contentPane);
 
