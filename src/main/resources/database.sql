@@ -66,7 +66,8 @@ CREATE TABLE recipe_instruction
     recipe_id NUMBER NOT NULL
         REFERENCES recipe (id)
             ON DELETE CASCADE,
-    step NUMBER NOT NULL,
+    step NUMBER NOT NULL
+        CHECK (step > 0),
     instruction VARCHAR(255) NOT NULL
 )
 /
@@ -87,14 +88,22 @@ CREATE TABLE food_item
     food_group VARCHAR(9) DEFAULT NULL
         CHECK (food_group IN ('fruit', 'vegetable', 'grains', 'protein', 'dairy')),
     unit VARCHAR(255) NOT NULL,
-    calories NUMBER(38, 3) DEFAULT NULL,
-    fat NUMBER(38, 3) DEFAULT NULL, -- all nutrition facts are store in milligrams (1g = 1000mg)
-    cholesterol NUMBER(38, 3) DEFAULT NULL,
-    sodium NUMBER(38, 3) DEFAULT NULL,
-    carbohydrates NUMBER(38, 3) DEFAULT NULL,
-    dietary_fiber NUMBER(38, 3) DEFAULT NULL,
-    sugars NUMBER(38, 3) DEFAULT NULL,
+    calories NUMBER(38, 3) DEFAULT NULL
+        CHECK (calories >= 0),
+    fat NUMBER(38, 3) DEFAULT NULL -- all nutrition facts are store in milligrams (1g = 1000mg)
+        CHECK (fat >= 0),
+    cholesterol NUMBER(38, 3) DEFAULT NULL
+        CHECK (cholesterol >= 0),
+    sodium NUMBER(38, 3) DEFAULT NULL
+        CHECK (sodium >= 0),
+    carbohydrates NUMBER(38, 3) DEFAULT NULL
+        CHECK (carbohydrates >= 0),
+    dietary_fiber NUMBER(38, 3) DEFAULT NULL
+        CHECK (dietary_fiber >= 0),
+    sugars NUMBER(38, 3) DEFAULT NULL
+        CHECK (sugars >= 0),
     protein NUMBER(38, 3) DEFAULT NULL
+        CHECK (protein >= 0)
 )
 /
 
@@ -115,6 +124,7 @@ CREATE TABLE recipe_ingredient
         REFERENCES food_item (id)
             ON DELETE CASCADE,
     quantity NUMBER(38, 3) NOT NULL
+        CHECK (quantity > 0)
 )
 /
 CREATE INDEX recipe_ingredient_recipe_id_idx ON recipe_ingredient (recipe_id)
@@ -134,6 +144,7 @@ CREATE TABLE fridge_item
         REFERENCES food_item (id)
             ON DELETE CASCADE,
     quantity NUMBER(38, 3) NOT NULL
+        CHECK (quantity > 0)
 )
 /
 

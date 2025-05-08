@@ -7,8 +7,6 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-public @interface CheckNumber {
-    int min();
-
-    int max();
+public @interface CheckNumberMinimum {
+    int value();
 }

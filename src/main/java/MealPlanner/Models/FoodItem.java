@@ -14,15 +14,15 @@ public class FoodItem extends Model {
     @PrimaryKey public Number id;
     @NotNull @OrderBy("ASC") public String name;
     @CheckString({"fruit", "vegetable", "grains", "protein", "dairy"}) public String food_group;
-    @NotNull @OrderBy("ASC") public String unit;
-    public Number calories;
-    public Number fat;
-    public Number cholesterol;
-    public Number sodium;
-    public Number carbohydrates;
-    public Number dietary_fiber;
-    public Number sugars;
-    public Number protein;
+    @NotNull @OrderBy("ASC")  public String unit;
+    @CheckNumberMinimum(0) public Number calories;
+    @CheckNumberMinimum(0) public Number fat;
+    @CheckNumberMinimum(0) public Number cholesterol;
+    @CheckNumberMinimum(0) public Number sodium;
+    @CheckNumberMinimum(0) public Number carbohydrates;
+    @CheckNumberMinimum(0) public Number dietary_fiber;
+    @CheckNumberMinimum(0) public Number sugars;
+    @CheckNumberMinimum(0) public Number protein;
 
     public static String formatDecimal(Number value) {
         BigDecimal bigDecimal = new BigDecimal(Double.toString(value.doubleValue()));

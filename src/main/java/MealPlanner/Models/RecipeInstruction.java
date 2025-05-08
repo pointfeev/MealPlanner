@@ -1,15 +1,12 @@
 package MealPlanner.Models;
 
-import MealPlanner.Models.Annotations.Ignore;
-import MealPlanner.Models.Annotations.NotNull;
-import MealPlanner.Models.Annotations.OrderBy;
-import MealPlanner.Models.Annotations.PrimaryKey;
+import MealPlanner.Models.Annotations.*;
 
 public class RecipeInstruction extends Model {
     @Ignore public static final String TABLE = "recipe_instruction";
 
     @PrimaryKey public Number id;
     @NotNull public Number recipe_id;
-    @NotNull @OrderBy("ASC") public Number step;
+    @NotNull @OrderBy("ASC") @CheckNumberGreaterThan(0) public Number step;
     @NotNull public String instruction;
 }

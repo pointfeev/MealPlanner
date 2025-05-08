@@ -7,7 +7,7 @@ public class Meal extends Model {
 
     @PrimaryKey public Number id;
     @NotNull public Number plan_id;
-    @NotNull @OrderBy("ASC") @CheckNumber(min = 1, max = 7) public Number day;
+    @NotNull @OrderBy("ASC") @CheckNumberBetween(min = 1, max = 7) public Number day;
     @NotNull @OrderBy("ASC") @CheckString({"breakfast", "lunch", "dinner"}) public String type;
     @NotNull @OrderBy("ASC") public Number recipe_id;
 

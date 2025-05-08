@@ -156,13 +156,13 @@ public abstract class Model {
     /**
      * Validates the current instance of the model by checking its fields against
      * specified constraints, such as annotations {@code @NotNull}, {@code @CheckString},
-     * and {@code @CheckNumber}.
+     * and {@code @CheckNumberBetween}.
      * <p>
      * The method dynamically evaluates fields using reflection and applies the
      * following validation criteria:
      * - Fields annotated with {@code @NotNull} must not be null or blank.
      * - Fields annotated with {@code @CheckString} must match one of the allowed values.
-     * - Fields annotated with {@code @CheckNumber} must fall within the specified range.
+     * - Fields annotated with {@code @CheckNumberBetween} must fall within the specified range.
      * - Fields annotated with {@code @Ignore} are skipped during validation.
      * <p>
      * If a validation failure occurs, an error dialog is displayed with the
@@ -212,12 +212,34 @@ public abstract class Model {
                     }
                 }
 
-                CheckNumber checkNumber = field.getAnnotation(CheckNumber.class);
-                if (checkNumber != null) {
+                CheckNumberGreaterThan checkNumberGreaterThan = field.getAnnotation(CheckNumberGreaterThan.class);
+                if (checkNumberGreaterThan != null) {
                     Number valueNumber = (Number) value;
 
-                    int checkMin = checkNumber.min();
-                    int checkMax = checkNumber.max();
+                    int checkValue = checkNumberGreaterThan.value();
+                    if (valueNumber.doubleValue() <= checkValue) {
+                        displayErrorDialog("Value for field '%s' must be greater than %d!".formatted(field.getName(), checkValue));
+                        return false;
+                    }
+                }
+
+                CheckNumberMinimum checkNumberMinimum = field.getAnnotation(CheckNumberMinimum.class);
+                if (checkNumberMinimum != null) {
+                    Number valueNumber = (Number) value;
+
+                    int checkValue = checkNumberMinimum.value();
+                    if (valueNumber.doubleValue() < checkValue) {
+                        displayErrorDialog("Value for field '%s' must be greater than or equal to %d!".formatted(field.getName(), checkValue));
+                        return false;
+                    }
+                }
+
+                CheckNumberBetween checkNumberBetween = field.getAnnotation(CheckNumberBetween.class);
+                if (checkNumberBetween != null) {
+                    Number valueNumber = (Number) value;
+
+                    int checkMin = checkNumberBetween.min();
+                    int checkMax = checkNumberBetween.max();
                     if (valueNumber.doubleValue() < checkMin || valueNumber.doubleValue() > checkMax) {
                         displayErrorDialog("Value for field '%s' must be between %d and %d!".formatted(field.getName(), checkMin, checkMax));
                         return false;

@@ -1,16 +1,13 @@
 package MealPlanner.Models;
 
-import MealPlanner.Models.Annotations.Ignore;
-import MealPlanner.Models.Annotations.NotNull;
-import MealPlanner.Models.Annotations.OrderBy;
-import MealPlanner.Models.Annotations.PrimaryKey;
+import MealPlanner.Models.Annotations.*;
 
 public class FridgeItem extends Model {
     @Ignore public static final String TABLE = "fridge_item";
 
     @PrimaryKey public Number id;
     @NotNull @OrderBy("ASC") public Number food_id;
-    @NotNull @OrderBy("DESC") public Number quantity;
+    @NotNull @OrderBy("DESC") @CheckNumberGreaterThan(0) public Number quantity;
 
     @Ignore private FoodItem foodItem;
 
