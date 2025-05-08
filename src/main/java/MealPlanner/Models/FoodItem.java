@@ -14,7 +14,7 @@ public class FoodItem extends Model {
     @PrimaryKey public Number id;
     @NotNull @OrderBy("ASC") public String name;
     @CheckString({"fruit", "vegetable", "grains", "protein", "dairy"}) public String food_group;
-    @NotNull @OrderBy("ASC")  public String unit;
+    @NotNull @OrderBy("ASC") public String unit;
     @CheckNumberMinimum(0) public Number calories;
     @CheckNumberMinimum(0) public Number fat;
     @CheckNumberMinimum(0) public Number cholesterol;
